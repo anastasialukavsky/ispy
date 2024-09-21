@@ -28,6 +28,7 @@ export default {
         'primary-dark-blue': '#100E17',
         'primary-dark-gray': '#292E2F',
         'primary-light-fill': '#FBFBF7',
+        'toolbox-gray': '#51595A',
       },
       screens: {
         xxs: '360px',
