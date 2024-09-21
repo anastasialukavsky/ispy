@@ -28,11 +28,14 @@ function ImageUploader() {
   );
   const [metadataReady, setMetadataReady] = useState<boolean>(false);
   const [displayMetadata, setDisplayMetadata] = useState<boolean>(false);
-    const [geolocation, setGeolocation] = useState<{
-      latitude: number;
-      longitude: number;
-    } | null>(null);
+  const [geolocation, setGeolocation] = useState<{
+    latitude: number;
+    longitude: number;
+  } | null>(null);
+  const [enableButton, setEnableButton] = useState<boolean>(false)
+  const [imageUploaded, setImageUploaded] = useState<boolean>(false)
 
+  console.log({enableButton})
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event?.target?.files) {
       const file = event.target.files[0];
@@ -47,6 +50,8 @@ function ImageUploader() {
           setMetadata(null);
           setMetadataReady(false);
           setDisplayMetadata(false);
+          setEnableButton(true)
+          setImageUploaded(true)
         };
         reader.readAsDataURL(file);
       }
@@ -146,11 +151,13 @@ function ImageUploader() {
   const overallProbability = calculateOverallProbability();
 
   return (
-    <div className='flex min-h-[calc(100vh_-_64px)] w-full bg-primary-dark-gray'>
+    <div className='flex min-h-[calc(100vh_-_64px)] w-full bg-primary-dark-gray font-bench'>
       <div className='fixed left-0 top-18 h-full bg-toolbox-gray p-4 w-[25rem] text-primary-light-fill'>
         <Toolbox
           setSelectedAlgo={setSelectedAlgo}
           setDisplayMetadata={setDisplayMetadata}
+          setEnableButton={setEnableButton}
+          enableButton={enableButton}
         />
       </div>
 
@@ -168,9 +175,14 @@ function ImageUploader() {
         />
         <label
           htmlFor='file-input'
-          className='cursor-pointer px-4 py-2 text-white border-2 border-white'
+          className='cursor-pointer px-4 py-2 text-white border border-white'
         >
-          + Upload your image
+          <img
+            src='public/icons/add.svg'
+            alt='Upload Icon'
+            className='w-3 h-3 mr-2 inline'
+          />
+          {!imageUploaded ? 'Upload your image' : 'Upload another image'}
         </label>
 
         <div className='bg-red-400 flex pt-10'>
