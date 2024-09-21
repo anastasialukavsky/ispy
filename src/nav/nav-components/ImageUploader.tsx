@@ -26,9 +26,13 @@ function ImageUploader() {
   const [historicalWeather, setHistoricalWeather] = useState<string | null>(
     null
   );
-  const [metadataReady, setMetadataReady] = useState<boolean>(false); 
+  const [metadataReady, setMetadataReady] = useState<boolean>(false);
+  const [displayMetadata, setDisplayMetadata] = useState<boolean>(false);
+    const [geolocation, setGeolocation] = useState<{
+      latitude: number;
+      longitude: number;
+    } | null>(null);
 
-  // Handle image upload and trigger metadata extraction automatically
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event?.target?.files) {
       const file = event.target.files[0];
@@ -38,17 +42,17 @@ function ImageUploader() {
           setSelectedImage(e.target?.result as string);
           setSelectedAlgo(null);
           setResults([]);
-          setTamperingResult(null); 
-          setWeatherPrediction(null); 
+          setTamperingResult(null);
+          setWeatherPrediction(null);
           setMetadata(null);
           setMetadataReady(false);
+          setDisplayMetadata(false);
         };
         reader.readAsDataURL(file);
       }
     }
   };
 
-  // Automatically extract metadata when an image is uploaded
   useEffect(() => {
     if (selectedImage) {
       extractMetadataForImage();
@@ -60,18 +64,15 @@ function ImageUploader() {
 
     try {
       const file = await fetch(selectedImage).then((res) => res.blob());
-      const meta = await exifr.parse(file); 
+      const meta = await exifr.parse(file);
       setMetadata(meta);
-
       setMetadataReady(true);
-
-      console.log('Extracted Metadata:', meta);
+      setDisplayMetadata(false);
     } catch (error) {
       console.error('Error extracting metadata:', error);
     }
   };
 
-  // Handle results from algorithms
   const handleResult = (result: Result) => {
     setResults((prevResults) => {
       const newResults = [...prevResults];
@@ -115,98 +116,44 @@ function ImageUploader() {
             setProcessing={setProcessing}
           />
         );
-      case 'CopyMove':
-        return (
-          <CopyMoveComponent
-            imageSrc={selectedImage}
-            onResult={handleResult}
-            tamperingResult={tamperingResult}
-            setTamperingResult={setTamperingResult}
-            processing={processing}
-            setProcessing={setProcessing}
-          />
-        );
       case 'Metadata':
         return (
           <MetadataExtraction
             imageSrc={selectedImage}
             onResult={handleResult}
+            setMetadata={setMetadata}
             historicalWeather={historicalWeather}
             setHistoricalWeather={setHistoricalWeather}
             weatherPrediction={weatherPrediction}
-            setMetadata={setMetadata}
+            setGeolocation={setGeolocation}
+            geolocation={geolocation}
           />
         );
       case 'Weather':
-        if (!metadataReady) {
-          return <p>Extracting metadata... Please wait.</p>; // Prevent running model until metadata is ready
-        }
-        return (
+        return metadataReady ? (
           <WeatherPrediction
             imageSrc={selectedImage}
             setWeatherPrediction={setWeatherPrediction}
           />
-        );
-      case 'All':
-        return (
-          <>
-            <ELAComponent
-              imageSrc={selectedImage}
-              onResult={handleResult}
-              tamperingResult={tamperingResult}
-              setTamperingResult={setTamperingResult}
-              processing={processing}
-              setProcessing={setProcessing}
-            />
-            <NoiseAnalysisComponent
-              imageSrc={selectedImage}
-              onResult={handleResult}
-              tamperingResult={tamperingResult}
-              setTamperingResult={setTamperingResult}
-              processing={processing}
-              setProcessing={setProcessing}
-            />
-            <CopyMoveComponent
-              imageSrc={selectedImage}
-              onResult={handleResult}
-              tamperingResult={tamperingResult}
-              setTamperingResult={setTamperingResult}
-              processing={processing}
-              setProcessing={setProcessing}
-            />
-            <MetadataExtraction
-              imageSrc={selectedImage}
-              onResult={handleResult}
-              setMetadata={setMetadata}
-              setHistoricalWeather={setHistoricalWeather}
-              historicalWeather={historicalWeather}
-              weatherPrediction={weatherPrediction}
-            />
-            {metadataReady ? (
-              <WeatherPrediction
-                imageSrc={selectedImage}
-                setWeatherPrediction={setWeatherPrediction}
-              />
-            ) : (
-              <p>Extracting metadata... Please wait.</p>
-            )}
-          </>
+        ) : (
+          <p>Extracting metadata... Please wait.</p>
         );
       default:
-        return <DefaultResult />;
+        return null;
     }
   };
 
   const overallProbability = calculateOverallProbability();
 
   return (
-    <div className='flex h-[100vh] w-full bg-primary-dark-blue/30'>
-      {/* Toolbox for selecting algorithms */}
-      <div className='fixed left-0 top-0 h-full bg-gray-100 p-4 w-1/4'>
-        <Toolbox setSelectedAlgo={setSelectedAlgo} />
+    <div className='flex min-h-[calc(100vh_-_64px)] w-full bg-primary-dark-gray'>
+      <div className='fixed left-0 top-18 h-full bg-toolbox-gray p-4 w-[25rem] text-primary-light-fill'>
+        <Toolbox
+          setSelectedAlgo={setSelectedAlgo}
+          setDisplayMetadata={setDisplayMetadata}
+        />
       </div>
 
-      {/* Main content */}
       <div className='flex flex-col items-center justify-start w-full pl-96'>
         <h1 className='py-10 text-3xl font-bold text-white uppercase'>
           Image Forgery Detection
@@ -226,7 +173,6 @@ function ImageUploader() {
           + Upload your image
         </label>
 
-        {/* Display uploaded image */}
         <div className='bg-red-400 flex pt-10'>
           {selectedImage && (
             <img
@@ -235,8 +181,6 @@ function ImageUploader() {
               className='border w-[500px]'
             />
           )}
-
-          {/* Render selected algorithm */}
           {selectedImage && (
             <div className='flex justify-center items-center w-full'>
               {renderSelectedAlgo()}
@@ -244,24 +188,34 @@ function ImageUploader() {
           )}
         </div>
 
-        {/* Display tampering result */}
-        <div>
-          {tamperingResult && !processing && (
-            <p>
-              <strong>Analysis Result:</strong> {tamperingResult}
-            </p>
+        {/* Display weather results when the 'Weather' algo is selected */}
+        {selectedAlgo === 'Weather' &&
+          historicalWeather &&
+          weatherPrediction &&
+          geolocation && (
+            <div className='mt-5'>
+              <p>
+                <strong>Historical Weather:</strong> {historicalWeather}
+              </p>
+              <p>
+                <strong>Predicted Weather:</strong> {weatherPrediction}
+              </p>
+            </div>
           )}
-        </div>
 
-        {/* Display metadata extraction results */}
-        {metadata && (
+        {tamperingResult && !processing && (
+          <p>
+            <strong>Analysis Result:</strong> {tamperingResult}
+          </p>
+        )}
+
+        {metadata && displayMetadata && (
           <div>
             <h3>Metadata Results:</h3>
             <pre>{JSON.stringify(metadata, null, 2)}</pre>
           </div>
         )}
 
-        {/* Display overall probability */}
         {overallProbability !== null && (
           <div className='mt-5 text-center'>
             <h3 className='text-xl font-semibold'>
