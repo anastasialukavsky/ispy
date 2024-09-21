@@ -1,35 +1,60 @@
 import React, { Dispatch, SetStateAction } from 'react';
-import {Button} from '../../UI/';
+import { Button } from '../../UI/';
 
 type ToolboxProps = {
   setSelectedAlgo: Dispatch<SetStateAction<string | null>>;
+  setDisplayMetadata: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export default function Toolbox({ setSelectedAlgo }: ToolboxProps) {
+export default function Toolbox({
+  setSelectedAlgo,
+  setDisplayMetadata,
+}: ToolboxProps) {
   const buttonStyles = 'border-2 border-black mb-2';
 
   return (
     <section className='flex flex-col justify-center pt-96 bg-gray-100'>
-      <Button onClick={() => setSelectedAlgo('ELA')} className={buttonStyles}>
+      <Button
+        onClick={() => {
+          setSelectedAlgo('ELA');
+          setDisplayMetadata(false);
+        }}
+        className={buttonStyles}
+      >
         ELA
       </Button>
-      <Button onClick={() => setSelectedAlgo('Noise')} className={buttonStyles}>
+      <Button
+        onClick={() => {
+          setSelectedAlgo('Noise');
+          setDisplayMetadata(false);
+        }}
+        className={buttonStyles}
+      >
         Noise Analysis
       </Button>
-      <Button
-        onClick={() => setSelectedAlgo('CopyMove')}
+      {/* <Button
+        onClick={() => {
+          setSelectedAlgo('CopyMove');
+          setDisplayMetadata(false);
+        }}
         className={buttonStyles}
       >
         Copy-Move Detection
-      </Button>
+      </Button> */}
       <Button
-        onClick={() => setSelectedAlgo('Metadata')}
+        onClick={() => {
+          setSelectedAlgo('Metadata');
+          setDisplayMetadata(true);
+        }}
         className={buttonStyles}
       >
         Metadata
       </Button>
       <Button
-        onClick={() => setSelectedAlgo('Weather')}
+        onClick={() => {
+          setSelectedAlgo('Weather');
+          setDisplayMetadata(false);
+        }}
         className={buttonStyles}
       >
         Weather
@@ -40,3 +65,6 @@ export default function Toolbox({ setSelectedAlgo }: ToolboxProps) {
     </section>
   );
 }
+
+
+     
