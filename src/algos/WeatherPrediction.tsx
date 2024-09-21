@@ -50,8 +50,7 @@ export default function WeatherPrediction({ imageSrc, setWeatherPrediction }: We
 
   return (
     <div>
-      <h3>Weather Condition Prediction</h3>
-      {imageSrc && <img src={imageSrc} alt="Uploaded" style={{ maxWidth: '300px' }} />}
+      {imageSrc && <img src={imageSrc} alt="Uploaded" style={{ maxWidth: '500px' }} />}
     </div>
   );
 };

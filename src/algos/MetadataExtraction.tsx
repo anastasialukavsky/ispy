@@ -11,6 +11,16 @@ interface Props {
   weatherPrediction: string | null;
   setHistoricalWeather: React.Dispatch<React.SetStateAction<string | null>>;
   historicalWeather: string | null;
+  setGeolocation: React.Dispatch<
+    React.SetStateAction<{
+      latitude: number;
+      longitude: number;
+    } | null>
+  >;
+  geolocation: {
+    latitude: number;
+    longitude: number;
+  } | null;
 }
 
 const MetadataExtraction = ({
@@ -20,11 +30,10 @@ const MetadataExtraction = ({
   weatherPrediction,
   setHistoricalWeather,
   historicalWeather,
+  setGeolocation,
+  geolocation
 }: Props) => {
-  const [geolocation, setGeolocation] = useState<{
-    latitude: number;
-    longitude: number;
-  } | null>(null);
+
   const [tamperingScore, setTamperingScore] = useState<number>(0);
 
   const fetchHistoricalWeather = async (
@@ -109,11 +118,10 @@ const MetadataExtraction = ({
 
   return (
     <div>
-      <h3>Weather Validation</h3>
       {imageSrc && (
         <img src={imageSrc} alt='Uploaded' style={{ maxWidth: '500px' }} />
       )}
-      {geolocation && historicalWeather && weatherPrediction && (
+      {/* {geolocation && historicalWeather && weatherPrediction && (
         <div>
           <p>
             <strong>Historical Weather:</strong> {historicalWeather}
@@ -127,7 +135,7 @@ const MetadataExtraction = ({
             </p>
           )}
         </div>
-      )}
+      )} */}
     </div>
   );
 };
