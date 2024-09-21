@@ -30,7 +30,7 @@ export default function Navbar() {
       </ul>
 
       {/* Bottom Border */}
-      <div className='absolute bottom-0 right-0 h-[2px] w-4/12 bg-black'></div>
+      {/* <div className='absolute bottom-0 right-0 h-[2px] w-4/12 bg-black'></div> */}
     </nav>
   );
 }

@@ -10,15 +10,16 @@ export default function Toolbox({
   setSelectedAlgo,
   setDisplayMetadata,
 }: ToolboxProps) {
-  const buttonStyles = 'border-2 border-black mb-2';
+  const buttonStyles = 'mb-4';
 
   return (
-    <section className='flex flex-col justify-center pt-96 bg-gray-100'>
+    <section className='flex flex-col translate-y-full justify-center'>
       <Button
         onClick={() => {
           setSelectedAlgo('ELA');
           setDisplayMetadata(false);
         }}
+        colorVariant='dark'
         className={buttonStyles}
       >
         ELA
@@ -28,6 +29,7 @@ export default function Toolbox({
           setSelectedAlgo('Noise');
           setDisplayMetadata(false);
         }}
+        colorVariant='dark'
         className={buttonStyles}
       >
         Noise Analysis
@@ -46,6 +48,7 @@ export default function Toolbox({
           setSelectedAlgo('Metadata');
           setDisplayMetadata(true);
         }}
+        colorVariant='dark'
         className={buttonStyles}
       >
         Metadata
@@ -55,16 +58,18 @@ export default function Toolbox({
           setSelectedAlgo('Weather');
           setDisplayMetadata(false);
         }}
+        colorVariant='dark'
         className={buttonStyles}
       >
         Weather
       </Button>
-      <Button onClick={() => setSelectedAlgo('All')} className={buttonStyles}>
+      <Button
+        onClick={() => setSelectedAlgo('All')}
+        colorVariant='dark'
+        className={buttonStyles}
+      >
         Apply All
       </Button>
     </section>
   );
 }
-
-
-     

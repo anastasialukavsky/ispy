@@ -14,7 +14,7 @@ export default function AboutLandingSummary() {
         <h1 className='text-5xl font-bold text-white pl-10 self-start'>
           what is it all about?..
         </h1>
-        <div className='flex flex-col pt-16 text-white border border-blue-600 w-full 5xl:w-[70%] justify-center px-10 items-end'>
+        <div className='flex flex-col pt-16 text-white border border-blue-600 w-full 5xl:w-[70%] justify-center px-10 items-end h-fit'>
           <div className='flex'>
             <div className='w-fit pr-10'>
               <img
@@ -24,7 +24,7 @@ export default function AboutLandingSummary() {
               />
             </div>
             <div className='flex   gap-10 w-[60%]'>
-              <p className=' w-1/2'>
+              <p className=' w-1/2 border border-white h-fit '>
                 A picture is worth a thousand words, but what if that picture
                 isn't telling the truth? In an era where images are easily
                 manipulated, the challenge of distinguishing reality from
@@ -36,7 +36,7 @@ export default function AboutLandingSummary() {
                 software. While this can be effective, it's not always
                 sufficient.
               </p>
-              <p className=' w-1/2'>
+              <p className=' w-1/2 h-fit border border-white'>
                 Some images may not display obvious signs of tampering, leaving
                 those methods inconclusive. That’s where data-driven analysis
                 comes into play. Hidden within the digital makeup of an image
@@ -52,7 +52,7 @@ export default function AboutLandingSummary() {
               </p>
             </div>
           </div>
-          <div className='w-44 pl-5 '>
+          <div className='w-44 pl-5'>
             <Button
               onClick={handleButtonClick}
               className='w-full font-bench text-lg'
