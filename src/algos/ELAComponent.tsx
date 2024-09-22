@@ -12,8 +12,7 @@ interface ELAComponentProps {
 }
 
 export default function ELAComponent  ({ imageSrc, onResult, tamperingResult, setTamperingResult, processing, setProcessing }: ELAComponentProps) {
-  // const [processing, setProcessing] = useState<boolean>(false);
-  // const [tamperingResult, setTamperingResult] = useState<string | null>(null);
+
   const processedCanvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {

@@ -4,49 +4,53 @@ import { Button } from '../../UI/';
 type ToolboxProps = {
   setSelectedAlgo: Dispatch<SetStateAction<string | null>>;
   setDisplayMetadata: React.Dispatch<React.SetStateAction<boolean>>;
+  setEnableButton: React.Dispatch<React.SetStateAction<boolean>>;
+  enableButton: boolean;
 };
 
 export default function Toolbox({
   setSelectedAlgo,
   setDisplayMetadata,
+  enableButton,
+  setEnableButton,
 }: ToolboxProps) {
-  const buttonStyles = 'border-2 border-black mb-2';
+  const buttonEnabledStyles = ' mb-11 bg-button-unabled-fill';
+  const buttonDisabledStyles =
+    'mb-11 text-toolbox-gray mb-4 bg-button-disabled-fill cursor-not-allowed';
+
 
   return (
-    <section className='flex flex-col justify-center pt-96 bg-gray-100'>
+    <section className='flex flex-col translate-y-1/2 justify-center font-abel text-lg tracking-wide'>
       <Button
         onClick={() => {
           setSelectedAlgo('ELA');
           setDisplayMetadata(false);
         }}
-        className={buttonStyles}
+        colorVariant={enableButton ? 'light' : 'dark'}
+        className={enableButton ? buttonEnabledStyles : buttonDisabledStyles}
+        disabled={!enableButton}
       >
-        ELA
+        Error Level Analysis
       </Button>
       <Button
         onClick={() => {
           setSelectedAlgo('Noise');
           setDisplayMetadata(false);
         }}
-        className={buttonStyles}
+        colorVariant={enableButton ? 'light' : 'dark'}
+        className={enableButton ? buttonEnabledStyles : buttonDisabledStyles}
+        disabled={!enableButton}
       >
         Noise Analysis
       </Button>
-      {/* <Button
-        onClick={() => {
-          setSelectedAlgo('CopyMove');
-          setDisplayMetadata(false);
-        }}
-        className={buttonStyles}
-      >
-        Copy-Move Detection
-      </Button> */}
       <Button
         onClick={() => {
           setSelectedAlgo('Metadata');
           setDisplayMetadata(true);
         }}
-        className={buttonStyles}
+        colorVariant={enableButton ? 'light' : 'dark'}
+        className={enableButton ? buttonEnabledStyles : buttonDisabledStyles}
+        disabled={!enableButton}
       >
         Metadata
       </Button>
@@ -55,16 +59,20 @@ export default function Toolbox({
           setSelectedAlgo('Weather');
           setDisplayMetadata(false);
         }}
-        className={buttonStyles}
+        colorVariant={enableButton ? 'light' : 'dark'}
+        className={enableButton ? buttonEnabledStyles : buttonDisabledStyles}
+        disabled={!enableButton}
       >
         Weather
       </Button>
-      <Button onClick={() => setSelectedAlgo('All')} className={buttonStyles}>
+      <Button
+        onClick={() => setSelectedAlgo('All')}
+        colorVariant={enableButton ? 'light' : 'dark'}
+        className={enableButton ? buttonEnabledStyles : buttonDisabledStyles}
+        disabled={!enableButton}
+      >
         Apply All
       </Button>
     </section>
   );
 }
-
-
-     
