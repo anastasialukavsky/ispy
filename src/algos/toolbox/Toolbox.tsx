@@ -14,9 +14,9 @@ export default function Toolbox({
   enableButton,
   setEnableButton,
 }: ToolboxProps) {
-  const buttonEnabledStyles = ' mb-11 bg-button-unabled-fill';
+  const buttonEnabledStyles = ' mb-10 bg-button-unabled-fill';
   const buttonDisabledStyles =
-    'mb-11 text-toolbox-gray mb-4 bg-button-disabled-fill cursor-not-allowed';
+    'mb-11 text-button-unabled-fill mb-4 bg-button-disabled-fill cursor-not-allowed';
 
 
   return (
