@@ -4,7 +4,7 @@ import { Logo } from '../UI';
 
 export default function Navbar() {
   return (
-    <nav className='sticky top-0 z-50 flex h-16 w-full items-center justify-between bg-white text-lg uppercase'>
+    <nav className='sticky top-0 z-50 flex h-16 w-full items-center justify-between bg-white text-xl font-bench'>
       {/* Left Section: Logo */}
       <div className='pl-10'>
         <Logo />
@@ -15,6 +15,11 @@ export default function Navbar() {
         <li>
           <NavLink to='/' className='hover:underline'>
             home
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to='/upload' className='hover:underline'>
+            upload image
           </NavLink>
         </li>
         <li>
