@@ -7,6 +7,7 @@ import MetadataExtraction from '../../algos/MetadataExtraction';
 import WeatherPrediction from '../../algos/WeatherPrediction';
 import DefaultResult from '../../algos/DefaultResult';
 import exifr from 'exifr';
+import Loader from '../../UI/Loader';
 
 interface Result {
   score: number;
@@ -32,8 +33,8 @@ function ImageUploader() {
     latitude: number;
     longitude: number;
   } | null>(null);
-  const [enableButton, setEnableButton] = useState<boolean>(false)
-  const [imageUploaded, setImageUploaded] = useState<boolean>(false)
+  const [enableButton, setEnableButton] = useState<boolean>(false);
+  const [imageUploaded, setImageUploaded] = useState<boolean>(false);
 
   // console.log({enableButton})
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,8 +51,8 @@ function ImageUploader() {
           setMetadata(null);
           setMetadataReady(false);
           setDisplayMetadata(false);
-          setEnableButton(true)
-          setImageUploaded(true)
+          setEnableButton(true);
+          setImageUploaded(true);
         };
         reader.readAsDataURL(file);
       }
@@ -71,6 +72,7 @@ function ImageUploader() {
       const file = await fetch(selectedImage).then((res) => res.blob());
       const meta = await exifr.parse(file);
       setMetadata(meta);
+      console.log({ meta });
       setMetadataReady(true);
       setDisplayMetadata(false);
     } catch (error) {
@@ -219,10 +221,13 @@ function ImageUploader() {
             </div>
           )}
 
-        {tamperingResult && !processing && (
+        {tamperingResult && !processing ? (
           <p className='pt-6'>
             <strong>Analysis Result:</strong> {tamperingResult}
           </p>
+        ) : (
+          null
+          // <Loader />
         )}
 
         {metadata && displayMetadata && (

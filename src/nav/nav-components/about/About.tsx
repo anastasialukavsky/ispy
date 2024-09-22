@@ -13,7 +13,6 @@ export default function About() {
   const [selectedArticle, setSelectedArticle] = useState<string | null>(null);
 
   useEffect(() => {
-    // Set selected article based on URL when the component loads
     const path = location.pathname.split('/')[2]; // Get the part after "/about/"
     if (path) {
       setSelectedArticle(path.replace(/-/g, ' ')); // Convert URL-friendly format to readable string
@@ -45,15 +44,19 @@ export default function About() {
     }
   };
 
-  return (
-    <section className='w-full min-h-[calc(100vh_-_64px)] bg-primary-dark-gray text-primary-light-fill font-abel'>
-      <aside className='fixed left-0 top-18 h-full bg-toolbox-gray p-4 w-[25rem] text-primary-light-fill'>
-        <AboutContentShelf setSelectedArticle={handleNavigation} />
-      </aside>
-      <article className='w-fit pl-[26rem] flex flex-col pt-10 text-primary-light-fill'>
-        <h1 className='text-9xl text-primary-light-fill'>{selectedArticle}</h1>
-        <div>{renderSelectedArticle()}</div>
-      </article>
-    </section>
-  );
+ return (
+   <section className='w-full min-h-[calc(100vh_-_64px)] bg-primary-dark-gray text-primary-light-fill font-abel'>
+     <aside className='fixed left-0 top-18 h-full bg-toolbox-gray p-4 w-[25rem] text-primary-light-fill'>
+       <AboutContentShelf setSelectedArticle={handleNavigation} />
+     </aside>
+
+     {/* Center the article content */}
+     <article className='w-full max-w-[50%] mx-auto flex flex-col pt-10 text-primary-light-fill pl-20'>
+       <h1 className='text-9xl text-primary-light-fill text-center'>
+         {selectedArticle}
+       </h1>
+       <div>{renderSelectedArticle()}</div>
+     </article>
+   </section>
+ );
 }
