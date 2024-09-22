@@ -27,10 +27,10 @@ export default {
     extend: {
       colors: {
         'primary-dark-blue': '#100E17',
-        'primary-dark-gray': '#292E2F',
+        'primary-dark-gray': '#1C1C1C',
         'primary-light-fill': '#FBFBF7',
-        'toolbox-gray': '#51595A',
-        'button-disabled-fill': 'rgba(0, 0, 0, .5)',
+        'toolbox-gray': '#212121',
+        'button-disabled-fill': 'rgba(0, 0, 0, .2)',
         'button-unabled-fill': 'rgba(215, 220, 225, .4)',
       },
       screens: {

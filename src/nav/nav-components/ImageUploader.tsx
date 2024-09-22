@@ -35,6 +35,10 @@ function ImageUploader() {
   } | null>(null);
   const [enableButton, setEnableButton] = useState<boolean>(false);
   const [imageUploaded, setImageUploaded] = useState<boolean>(false);
+  const [tamperingProbability, setTamperingProbability] = useState<
+    number | null
+  >(null);
+  const [softwareUsed, setSoftwareUsed] = useState<string | null >(null)
 
   // console.log({enableButton})
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -99,6 +103,7 @@ function ImageUploader() {
     return totalScore / results.length;
   };
 
+  console.log({softwareUsed})
   const renderSelectedAlgo = () => {
     switch (selectedAlgo) {
       case 'ELA':
@@ -110,9 +115,10 @@ function ImageUploader() {
             setTamperingResult={setTamperingResult}
             processing={processing}
             setProcessing={setProcessing}
+            setTamperingProbability={setTamperingProbability}
           />
         );
-      case 'Noise':
+      case 'Noise Analysis':
         return (
           <NoiseAnalysisComponent
             imageSrc={selectedImage}
@@ -121,6 +127,7 @@ function ImageUploader() {
             setTamperingResult={setTamperingResult}
             processing={processing}
             setProcessing={setProcessing}
+            setTamperingProbability={setTamperingProbability}
           />
         );
       case 'Metadata':
@@ -134,9 +141,12 @@ function ImageUploader() {
             weatherPrediction={weatherPrediction}
             setGeolocation={setGeolocation}
             geolocation={geolocation}
+            setTamperingProbability={setTamperingProbability}
+            tamperingProbability={tamperingProbability}
+            setSoftwareUsed={setSoftwareUsed} 
           />
         );
-      case 'Weather':
+      case 'Weather Analizer':
         return metadataReady ? (
           <WeatherPrediction
             imageSrc={selectedImage}
@@ -150,6 +160,8 @@ function ImageUploader() {
     }
   };
 
+  console.log({ tamperingProbability });
+  console.log({ selectedAlgo });
   const overallProbability = calculateOverallProbability();
 
   return (
@@ -177,7 +189,7 @@ function ImageUploader() {
         />
         <label
           htmlFor='file-input'
-          className='cursor-pointer px-4 py-2 text-white border border-white'
+          className='cursor-pointer px-4 py-2 text-white border border-white bg-primary-light-fill/20 transition-transform duration-300 transform hover:scale-105 relative after:content-[""] after:absolute after:left-0 after:bottom-0 after:w-0 after:h-[1px] after:bg-white after:transition-all after:duration-300 hover:after:w-full'
         >
           <img
             src='public/icons/add.svg'
@@ -192,7 +204,7 @@ function ImageUploader() {
             <img
               src={selectedImage}
               alt='Uploaded'
-              className='border w-[500px]'
+              className='3xl:w-[500px] w-[300px]'
             />
           )}
           {selectedImage && (
@@ -206,8 +218,10 @@ function ImageUploader() {
           )}
         </div>
 
-        {/* Display weather results when the 'Weather' algo is selected */}
-        {selectedAlgo === 'Weather' &&
+        {processing ? (
+          <Loader />
+        ) : (
+          selectedAlgo === 'Weather Analizer' &&
           historicalWeather &&
           weatherPrediction &&
           geolocation && (
@@ -219,16 +233,24 @@ function ImageUploader() {
                 <strong>Predicted Weather:</strong> {weatherPrediction}
               </p>
             </div>
-          )}
+          )
+        )}
 
         {tamperingResult && !processing ? (
           <p className='pt-6'>
-            <strong>Analysis Result:</strong> {tamperingResult}
+            <strong>Analysis Result for {selectedAlgo}:</strong> {tamperingResult}
           </p>
         ) : (
-          null
-          // <Loader />
+          <Loader />
         )}
+        {tamperingProbability !== null ? (
+          <div>
+            <p>
+              Approximate Tampering Probability:{' '}
+              {tamperingProbability.toFixed(2)}%
+            </p>
+          </div>
+        ): null}
 
         {metadata && displayMetadata && (
           <div>
