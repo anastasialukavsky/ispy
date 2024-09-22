@@ -25,7 +25,16 @@ export default function AboutContentShelf({
             Noise Analysis
           </Button>
         </li>
-        {/* Add more items here for other articles */}
+        <li>
+          <Button onClick={() => handleClick('Convolutional Neural Network')}>
+            Convolutional Neural Network
+          </Button>
+        </li>
+        <li>
+          <Button onClick={() => handleClick('Metadata Extraction')}>
+            Metadata Extractino
+          </Button>
+        </li>
       </ul>
     </div>
   );
