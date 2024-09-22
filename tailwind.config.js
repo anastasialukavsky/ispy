@@ -11,6 +11,7 @@ export default {
       londrina: ['Londrina Outline', 'sans-serif'],
       erica: ['Erica One', 'sans-serif'],
       bench: ['BenchNine', 'sans-serif'],
+      abel: ['Abel', 'sans-serif'],
     },
     fontWeight: {
       thin: 100,
@@ -29,6 +30,8 @@ export default {
         'primary-dark-gray': '#292E2F',
         'primary-light-fill': '#FBFBF7',
         'toolbox-gray': '#51595A',
+        'button-disabled-fill': 'rgba(0, 0, 0, .5)',
+        'button-unabled-fill': 'rgba(215, 220, 225, .4)',
       },
       screens: {
         xxs: '360px',
