@@ -35,7 +35,7 @@ function ImageUploader() {
   const [enableButton, setEnableButton] = useState<boolean>(false)
   const [imageUploaded, setImageUploaded] = useState<boolean>(false)
 
-  console.log({enableButton})
+  // console.log({enableButton})
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event?.target?.files) {
       const file = event.target.files[0];
@@ -151,7 +151,7 @@ function ImageUploader() {
   const overallProbability = calculateOverallProbability();
 
   return (
-    <div className='flex min-h-[calc(100vh_-_64px)] w-full bg-primary-dark-gray font-bench'>
+    <div className='flex min-h-[calc(100vh_-_64px)] w-full bg-primary-dark-gray font-abel text-primary-light-fill'>
       <div className='fixed left-0 top-18 h-full bg-toolbox-gray p-4 w-[25rem] text-primary-light-fill'>
         <Toolbox
           setSelectedAlgo={setSelectedAlgo}
@@ -185,7 +185,7 @@ function ImageUploader() {
           {!imageUploaded ? 'Upload your image' : 'Upload another image'}
         </label>
 
-        <div className='bg-red-400 flex pt-10'>
+        <div className='flex pt-10'>
           {selectedImage && (
             <img
               src={selectedImage}
@@ -194,7 +194,11 @@ function ImageUploader() {
             />
           )}
           {selectedImage && (
-            <div className='flex justify-center items-center w-full'>
+            <div
+              className={`${
+                imageUploaded ? 'pl-10' : ''
+              } flex justify-center items-center w-full`}
+            >
               {renderSelectedAlgo()}
             </div>
           )}
@@ -216,7 +220,7 @@ function ImageUploader() {
           )}
 
         {tamperingResult && !processing && (
-          <p>
+          <p className='pt-6'>
             <strong>Analysis Result:</strong> {tamperingResult}
           </p>
         )}
@@ -230,7 +234,7 @@ function ImageUploader() {
 
         {overallProbability !== null && (
           <div className='mt-5 text-center'>
-            <h3 className='text-xl font-semibold'>
+            <h3 className='text-xl font-semibold text-primary-light-fill'>
               Overall Tampering Probability
             </h3>
             <p className='text-lg'>
