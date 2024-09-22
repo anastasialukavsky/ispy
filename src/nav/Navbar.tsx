@@ -10,9 +10,9 @@ export default function Navbar() {
   const getNavbarColor = () => {
     switch (location.pathname) {
       case '/':
-        return 'bg-primary-light-fill'; // Light background for landing page
+        return 'bg-primary-light-fill'; 
       default:
-        return 'bg-primary-dark-gray'; // Dark background for other pages
+        return 'bg-primary-dark-gray'; 
     }
   };
 
@@ -31,7 +31,6 @@ export default function Navbar() {
     };
   }, []);
 
-  // Combine scroll and route-based background color
   const getFinalNavbarColor = () => {
     const routeColor = getNavbarColor();
     return isScrolled
@@ -41,11 +40,9 @@ export default function Navbar() {
 
   // Function to determine NavLink styles based on route
   const getNavlinkColor = () => {
-    // On landing page, set NavLink text to black
     if (location.pathname === '/') {
       return 'text-black hover:underline hover:text-black';
     }
-    // On other pages, set NavLink text to white
     return 'text-white hover:underline hover:text-white';
   };
 
