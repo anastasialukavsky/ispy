@@ -41,14 +41,14 @@ export default function Navbar() {
   // Function to determine NavLink styles based on route
   const getNavlinkColor = () => {
     if (location.pathname === '/') {
-      return 'text-black hover:underline hover:text-black';
+      return 'text-primary-dark-gray transition-transform duration-300 transform relative after:content-[""] after:absolute after:left-0 after:bottom-0 after:w-0 after:h-[2px] after:bg-primary-dark-gray after:transition-all after:duration-300 hover:after:w-full';
     }
-    return 'text-white hover:underline hover:text-white';
+    return 'text-white hover:text-white transition-transform duration-300 transform relative after:content-[""] after:absolute after:left-0 after:bottom-0 after:w-0 after:h-[2px] after:bg-white after:transition-all after:duration-300 hover:after:w-full';
   };
 
   return (
     <nav
-      className={`sticky top-0 z-50 flex h-16 w-full items-center justify-between transition-colors duration-300 ${getFinalNavbarColor()} text-xl font-bench`}
+      className={`sticky top-0 z-[250]  flex h-16 w-full items-center justify-between transition-colors duration-300 ${getFinalNavbarColor()} text-xl font-bench`}
     >
       {/* Left Section: Logo */}
       <div className='pl-10'>

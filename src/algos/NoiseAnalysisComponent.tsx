@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react';
+import React, { useRef, useEffect, useCallback } from 'react';
 import cv from '@techstark/opencv-js';
 import Loader from '../UI/Loader';
 
@@ -15,11 +15,10 @@ interface NoiseAnalysisComponentProps {
 export default function NoiseAnalysisComponent({
   imageSrc,
   onResult,
-  tamperingResult,
   setTamperingResult,
-  processing,
   setProcessing,
-  setTamperingProbability
+  setTamperingProbability,
+  processing,
 }: NoiseAnalysisComponentProps) {
   const processedCanvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -27,86 +26,77 @@ export default function NoiseAnalysisComponent({
     if (imageSrc) {
       processImage();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [imageSrc]);
 
-  const detectNoiseInconsistencies = useCallback(
+  const calculateNoiseScore = useCallback(
+    (grayMat: cv.Mat, blurredMat: cv.Mat): number => {
+      // Compute the difference between the original grayscale and blurred image
+      const diffMat = new cv.Mat();
+      cv.absdiff(grayMat, blurredMat, diffMat);
+
+      // Threshold the difference to detect noise pixels
+      const thresholdMat = new cv.Mat();
+      cv.threshold(diffMat, thresholdMat, 25, 255, cv.THRESH_BINARY);
+
+      const nonZero = cv.countNonZero(thresholdMat);
+      const totalPixels = grayMat.cols * grayMat.rows;
+
+      const noisePercentage = (nonZero / totalPixels) * 100;
+
+      // Clean up
+      diffMat.delete();
+      thresholdMat.delete();
+
+      // Return the noise percentage, converted to a score (higher score = more noise)
+      return noisePercentage / 100; // Normalize score between 0 and 1
+    },
+    []
+  );
+
+  const detectNoiseAndEdges = useCallback(
     (srcMat: cv.Mat, width: number, height: number) => {
       try {
-        // Convert to grayscale
+        console.log('Starting image processing...');
+
+        // Step 1: Convert image to grayscale
         const grayMat = new cv.Mat();
         cv.cvtColor(srcMat, grayMat, cv.COLOR_RGBA2GRAY);
+        console.log('Grayscale conversion done.');
 
-        // Edge detection to create a mask
-        const edges = new cv.Mat();
-        cv.Canny(grayMat, edges, 100, 200);
-        const edgeMask = new cv.Mat();
-        cv.bitwise_not(edges, edgeMask);
-
-        // Apply a high-pass filter to isolate noise
+        // Step 2: Apply Gaussian blur
         const blurredMat = new cv.Mat();
         cv.GaussianBlur(grayMat, blurredMat, new cv.Size(5, 5), 0);
-        const noiseMat = new cv.Mat();
-        cv.subtract(grayMat, blurredMat, noiseMat);
+        console.log('Gaussian blur applied.');
 
-        // Divide the image into blocks
-        const blockSize = 8;
-        const rows = Math.floor(height / blockSize);
-        const cols = Math.floor(width / blockSize);
+        // Display the processed image (grayscale)
+        cv.imshow(processedCanvasRef.current!, grayMat);
 
-        let totalVariance = 0;
-        let totalBlocks = 0;
+        // Calculate noise score
+        const noiseScore = calculateNoiseScore(grayMat, blurredMat);
 
-        // Calculate variance for each block
-        for (let row = 0; row < rows; row++) {
-          for (let col = 0; col < cols; col++) {
-            const x = col * blockSize;
-            const y = row * blockSize;
+        // Output the result to the parent component
+        onResult({ score: noiseScore, algo: 'Noise Analysis' });
 
-            // Extract block from the noiseMat
-            const block = noiseMat.roi(new cv.Rect(x, y, blockSize, blockSize));
+        // Set tampering probability based on noise score
+        setTamperingProbability(noiseScore * 100);
 
-            // Calculate variance for the block
-            const meanStdDev = new cv.Mat();
-            cv.meanStdDev(block, new cv.Mat(), meanStdDev);
-            const variance = meanStdDev.doubleAt(1, 0) ** 2;
-
-            totalVariance += variance;
-            totalBlocks++;
-
-            block.delete();
-            meanStdDev.delete();
-          }
-        }
-
-        // Compute the average variance
-        const averageVariance = totalVariance / totalBlocks;
-
-        // Assign tampering score based on the average variance
-        const tamperingScore = averageVariance > 0.5 ? 1 : averageVariance;
-
-        setTamperingProbability(tamperingScore * 100); // Convert to percentage
-
-        const algo = 'Noise Analysis';
-
-        onResult({ score: tamperingScore, algo });
-
-        setTamperingResult(
-          tamperingScore > 0.01 ? 'Tampering detected' : 'No tampering detected'
-        );
-
-        // Clean up
         grayMat.delete();
         blurredMat.delete();
-        noiseMat.delete();
-        edges.delete();
-        edgeMask.delete();
+        console.log('Image processing completed successfully.');
       } catch (error) {
-        console.error('Error in noise analysis:', error);
-        setTamperingResult('Error in noise analysis.');
+        console.error('Error in detectNoiseAndEdges:', error);
+        setTamperingResult('An error occurred during noise and edge analysis.');
+        setProcessing(false);
+        onResult({ score: 1, algo: 'Noise Analysis' }); 
       }
     },
-    [onResult, setTamperingResult]
+    [
+      calculateNoiseScore,
+      onResult,
+      setTamperingProbability,
+      setTamperingResult,
+      setProcessing,
+    ]
   );
 
   const processImage = useCallback(() => {
@@ -123,37 +113,39 @@ export default function NoiseAnalysisComponent({
         const width = MAX_WIDTH;
         const height = img.height * scale;
 
+        // Set canvas dimensions
         processedCanvasRef.current!.width = width;
         processedCanvasRef.current!.height = height;
 
-        const ctx = processedCanvasRef.current!.getContext('2d', {
-          willReadFrequently: true,
-        });
-
+        const ctx = processedCanvasRef.current!.getContext('2d');
         if (!ctx) {
           throw new Error('Failed to get context for processed canvas');
         }
         ctx.drawImage(img, 0, 0, width, height);
 
+        // Convert canvas to OpenCV Mat
         const srcMat = cv.imread(processedCanvasRef.current!);
+
         if (srcMat.empty()) {
           throw new Error('Failed to read image into OpenCV Mat');
         }
 
-        detectNoiseInconsistencies(srcMat, width, height);
+        detectNoiseAndEdges(srcMat, width, height);
+
         srcMat.delete();
         setProcessing(false);
       } catch (error) {
         console.error('Error processing image:', error);
+        setTamperingResult('An error occurred during processing.');
         setProcessing(false);
-        setTamperingResult('Error processing image.');
       }
     };
-    img.onerror = () => {
+    img.onerror = (error) => {
+      console.error('Error loading image:', error);
+      setTamperingResult('Failed to load the image.');
       setProcessing(false);
-      setTamperingResult('Failed to load image.');
     };
-  }, [imageSrc, detectNoiseInconsistencies, setProcessing, setTamperingResult]);
+  }, [imageSrc, detectNoiseAndEdges, setProcessing, setTamperingResult]);
 
   return (
     <div>
