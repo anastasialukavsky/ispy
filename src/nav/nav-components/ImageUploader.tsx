@@ -236,26 +236,27 @@ function ImageUploader() {
           )
         )}
 
-        {tamperingResult && !processing ? (
+        {tamperingResult && !processing && selectedAlgo !== 'Metadata' ? (
           <p className='pt-6'>
-            <strong>Analysis Result for {selectedAlgo}:</strong> {tamperingResult}
+            <strong>Analysis Result for {selectedAlgo}:</strong>{' '}
+            {tamperingResult}
           </p>
         ) : (
           <Loader />
         )}
-        {tamperingProbability !== null ? (
+        {tamperingProbability !== null && selectedAlgo !== 'Metadata' ? (
           <div>
             <p>
               Approximate Tampering Probability:{' '}
               {tamperingProbability.toFixed(2)}%
             </p>
           </div>
-        ): null}
+        ) : null}
 
         {metadata && displayMetadata && (
           <div>
             <h3>Metadata Results:</h3>
-            <pre>{JSON.stringify(metadata, null, 2)}</pre>
+            <pre className='text-sm'>{JSON.stringify(metadata, null, 2)}</pre>
           </div>
         )}
 
