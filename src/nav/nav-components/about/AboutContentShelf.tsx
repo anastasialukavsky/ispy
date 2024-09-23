@@ -1,6 +1,6 @@
-import React from 'react';
-import { Button } from '../../../UI';
 
+import { Button } from '../../../UI';
+``
 type AboutContentShelfProps = {
   setSelectedArticle: (article: string) => void;
 };

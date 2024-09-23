@@ -185,8 +185,8 @@ function ImageUploader() {
   const overallProbability = calculateOverallProbability();
 
   return (
-    <div className='flex min-h-[calc(100vh_-_64px)] w-full bg-primary-dark-gray font-abel text-primary-light-fill'>
-      <div className='fixed left-0 top-18 h-full bg-toolbox-gray p-4 w-[25rem] text-primary-light-fill'>
+    <div className='flex min-h-[calc(100vh_-_64px)] w-full bg-[#171717] font-abel text-primary-light-fill'>
+      <div className='fixed left-0 top-18 h-full bg-toolbox-gray p-4 w-[20%] 5xl:w-[14%] text-primary-light-fill '>
         <Toolbox
           setSelectedAlgo={setSelectedAlgo}
           setDisplayMetadata={setDisplayMetadata}
