@@ -12,7 +12,6 @@ export default function Landing() {
     navigate('/upload');
   };
   useLayoutEffect(() => {
-    // Ensure both sections exist before triggering animations
     if (
       !document.querySelector('.landing') ||
       !document.querySelector('.about')

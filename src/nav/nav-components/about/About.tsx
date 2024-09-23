@@ -17,7 +17,7 @@ export default function About() {
     if (path) {
       setSelectedArticle(path.replace(/-/g, ' ')); // Convert URL-friendly format to readable string
     } else {
-      setSelectedArticle('About Article'); // Default to "About Article" when path is just /about
+      setSelectedArticle('About iSPY'); // Default to "About Article" when path is just /about
     }
   }, [location]);
 

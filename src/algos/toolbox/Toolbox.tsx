@@ -37,9 +37,9 @@ export default function Toolbox({
       setShowTooltip(null);
     }, 1200);
   };
-console.log({metadata})
+// console.log({metadata})
   return (
-    <section className='flex flex-col translate-y-1/2 justify-center font-abel text-lg tracking-wide'>
+    <section className='flex flex-col 3xl:translate-y-1/2  translate-y-1/4 justify-center font-abel text-lg tracking-wide px-3'>
       {/* Error Level Analysis */}
       <div className='relative'>
         <Button
@@ -60,7 +60,7 @@ console.log({metadata})
             href={`${currentOrigin}/about/Error-Level-Analysis`}
             target='_blank'
             rel='noopener noreferrer'
-            className='absolute w-10 top-[1.5rem] right-[-4rem] transform -translate-y-1/2 z-10 '
+            className='absolute w-10 top-[1.5rem] right-[-4.5rem] transform -translate-y-1/2 z-10 '
           >
             <img
               src='public/icons/brain-bulb.svg'
@@ -91,7 +91,7 @@ console.log({metadata})
             href={`${currentOrigin}/about/Noise-Analysis`}
             target='_blank'
             rel='noopener noreferrer'
-            className='absolute w-10 top-[1.5rem] right-[-4rem] transform -translate-y-1/2 z-10 '
+            className='absolute w-10 top-[1.5rem] right-[-4.5rem] transform -translate-y-1/2 z-10 '
           >
             <img
               src='public/icons/brain-bulb.svg'
@@ -127,7 +127,7 @@ console.log({metadata})
             href={`${currentOrigin}/about/Metadata-Extraction`}
             target='_blank'
             rel='noopener noreferrer'
-            className='absolute w-10 top-[1.5rem] right-[-4rem] transform -translate-y-1/2 z-10 '
+            className='absolute w-10 top-[1.5rem] right-[-4.5rem] transform -translate-y-1/2 z-10 '
           >
             <img
               src='public/icons/brain-bulb.svg'
@@ -158,7 +158,7 @@ console.log({metadata})
             href={`${currentOrigin}/about/Convolutional-Neural-Network`}
             target='_blank'
             rel='noopener noreferrer'
-            className='absolute w-10 top-[1.5rem] right-[-4rem] transform -translate-y-1/2 z-10'
+            className='absolute w-10 top-[1.5rem] right-[-4.5rem] transform -translate-y-1/2 z-10'
           >
             <img
               src='public/icons/brain-bulb.svg'
