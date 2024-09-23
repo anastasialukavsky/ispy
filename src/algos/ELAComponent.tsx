@@ -26,9 +26,14 @@ export default function ELAComponent({
   setTamperingResult,
   processing,
   setProcessing,
-  setTamperingProbability
+  setTamperingProbability,
 }: ELAComponentProps) {
   const processedCanvasRef = useRef<HTMLCanvasElement>(null);
+  const zoomCanvasRef = useRef<HTMLCanvasElement>(null);
+  const [mousePosition, setMousePosition] = useState<{
+    x: number;
+    y: number;
+  } | null>(null);
 
   useEffect(() => {
     processImage();
@@ -169,14 +174,76 @@ export default function ELAComponent({
     };
   }, [imageSrc, detectELA, setProcessing, setTamperingResult]);
 
+ const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+   const rect = processedCanvasRef.current!.getBoundingClientRect();
+   const x = e.clientX - rect.left;
+   const y = e.clientY - rect.top;
+
+   const zoomSize = 150; 
+   const zoomFactor = 2; 
+
+   const adjustedX = Math.max(
+     zoomSize / 2,
+     Math.min(x, rect.width - zoomSize / 2)
+   );
+   const adjustedY = Math.max(
+     zoomSize / 2,
+     Math.min(y, rect.height - zoomSize / 2)
+   );
+
+   setMousePosition({ x: adjustedX, y: adjustedY });
+
+   const zoomCtx = zoomCanvasRef.current!.getContext('2d');
+   if (zoomCtx) {
+     zoomCtx.clearRect(
+       0,
+       0,
+       zoomCanvasRef.current!.width,
+       zoomCanvasRef.current!.height
+     );
+     zoomCtx.drawImage(
+       processedCanvasRef.current!,
+       adjustedX - zoomSize / 2,
+       adjustedY - zoomSize / 2,
+       zoomSize,
+       zoomSize,
+       0,
+       0,
+       zoomSize * zoomFactor,
+       zoomSize * zoomFactor
+     );
+   }
+ };
+  const handleMouseLeave = () => {
+    setMousePosition(null);
+  };
+
   return (
-    <div className=''>
+    <div className='relative'>
       <div>
         {processing && <Loader />}
-        <div>
-          <canvas ref={processedCanvasRef} />
-        </div>
+        <canvas
+          ref={processedCanvasRef}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+          style={{ cursor: 'crosshair' }}
+        />
       </div>
+
+      {/* Zoom Tooltip */}
+      {mousePosition && (
+        <div
+          style={{
+            position: 'absolute',
+            top: mousePosition.y + 10,
+            left: mousePosition.x + 10,
+            border: '1px solid #fff',
+            zIndex: 10,
+          }}
+        >
+          <canvas ref={zoomCanvasRef} width={200} height={200} />
+        </div>
+      )}
     </div>
   );
 }
