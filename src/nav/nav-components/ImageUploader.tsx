@@ -8,6 +8,7 @@ import WeatherPrediction from '../../algos/WeatherPrediction';
 import DefaultResult from '../../algos/DefaultResult';
 import exifr from 'exifr';
 import Loader from '../../UI/Loader';
+import GeolocationDisplay from '../../algos/GeolocationDisplay';
 
 interface Result {
   score: number;
@@ -38,7 +39,7 @@ function ImageUploader() {
   const [tamperingProbability, setTamperingProbability] = useState<
     number | null
   >(null);
-  const [softwareUsed, setSoftwareUsed] = useState<string | null >(null)
+  const [softwareUsed, setSoftwareUsed] = useState<string | null>(null);
 
   // console.log({enableButton})
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,12 +76,25 @@ function ImageUploader() {
     try {
       const file = await fetch(selectedImage).then((res) => res.blob());
       const meta = await exifr.parse(file);
-      setMetadata(meta);
+
+      if (meta) setMetadata(meta);
+      else setMetadataReady(false);
+
       console.log({ meta });
+      if (meta?.latitude && meta?.longitude) {
+        setGeolocation({
+          latitude: meta.latitude,
+          longitude: meta.longitude,
+        });
+      }
+
       setMetadataReady(true);
       setDisplayMetadata(false);
     } catch (error) {
-      console.error('Error extracting metadata:', error);
+     setMetadataReady(false);
+     setMetadata(null);
+     setGeolocation(null);
+      console.log('Error extracting metadata:', error);
     }
   };
 
@@ -103,7 +117,7 @@ function ImageUploader() {
     return totalScore / results.length;
   };
 
-  console.log({softwareUsed})
+  console.log({ softwareUsed });
   const renderSelectedAlgo = () => {
     switch (selectedAlgo) {
       case 'ELA':
@@ -143,8 +157,14 @@ function ImageUploader() {
             geolocation={geolocation}
             setTamperingProbability={setTamperingProbability}
             tamperingProbability={tamperingProbability}
-            setSoftwareUsed={setSoftwareUsed} 
+            setSoftwareUsed={setSoftwareUsed}
           />
+        );
+      case 'Geolocation':
+        return metadataReady ? (
+          <GeolocationDisplay geolocation={geolocation} metadata={metadata} />
+        ) : (
+          <p>Extracting geolocation... Please wait.</p>
         );
       case 'Weather Analizer':
         return metadataReady ? (
@@ -172,6 +192,7 @@ function ImageUploader() {
           setDisplayMetadata={setDisplayMetadata}
           setEnableButton={setEnableButton}
           enableButton={enableButton}
+          metadata={metadata}
         />
       </div>
 
@@ -236,7 +257,10 @@ function ImageUploader() {
           )
         )}
 
-        {tamperingResult && !processing && selectedAlgo !== 'Metadata' ? (
+        {tamperingResult &&
+        !processing &&
+        selectedAlgo !== 'Metadata' &&
+        selectedAlgo !== 'Geolocation' ? (
           <p className='pt-6'>
             <strong>Analysis Result for {selectedAlgo}:</strong>{' '}
             {tamperingResult}
@@ -244,7 +268,9 @@ function ImageUploader() {
         ) : (
           <Loader />
         )}
-        {tamperingProbability !== null && selectedAlgo !== 'Metadata' ? (
+        {tamperingProbability !== null &&
+        selectedAlgo !== 'Metadata' &&
+        selectedAlgo !== 'Geolocation' ? (
           <div>
             <p>
               Approximate Tampering Probability:{' '}
@@ -255,12 +281,32 @@ function ImageUploader() {
 
         {metadata && displayMetadata && (
           <div>
-            <h3>Metadata Results:</h3>
+            <h4 className='text-primary-light-fill text-lg pt-5 text-center'>
+              Metadata Results:
+            </h4>
             <pre className='text-sm'>{JSON.stringify(metadata, null, 2)}</pre>
           </div>
         )}
 
-        {overallProbability !== null && (
+        {geolocation && metadata && selectedAlgo === 'Geolocation' && (
+          <>
+            <h4 className='text-primary-light-fill text-lg pt-5'>
+              Geolocation coordinates:{' '}
+            </h4>
+            <pre className='text-sm pt-1'>
+              {JSON.stringify(
+                {
+                  latitude: geolocation.latitude,
+                  longitude: geolocation.longitude,
+                },
+                null,
+                2
+              )}
+            </pre>
+          </>
+        )}
+
+        {/* {overallProbability !== null && (
           <div className='mt-5 text-center'>
             <h3 className='text-xl font-semibold text-primary-light-fill'>
               Overall Tampering Probability
@@ -269,7 +315,7 @@ function ImageUploader() {
               {(overallProbability * 100).toFixed(2)}% likely tampered
             </p>
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );

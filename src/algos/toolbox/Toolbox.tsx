@@ -6,6 +6,7 @@ type ToolboxProps = {
   setDisplayMetadata: React.Dispatch<React.SetStateAction<boolean>>;
   setEnableButton: React.Dispatch<React.SetStateAction<boolean>>;
   enableButton: boolean;
+  metadata?: any;
 };
 
 export default function Toolbox({
@@ -13,6 +14,7 @@ export default function Toolbox({
   setDisplayMetadata,
   enableButton,
   setEnableButton,
+  metadata,
 }: ToolboxProps) {
   const [hoveredButton, setHoveredButton] = useState<string | null>(null);
   const [showTooltip, setShowTooltip] = useState<string | null>(null);
@@ -22,7 +24,7 @@ export default function Toolbox({
   const buttonEnabledStyles =
     'mb-10 bg-button-unabled-fill transition-transform duration-300 transform hover:scale-105 relative';
   const buttonDisabledStyles =
-    'mb-12 text-button-unabled-fill mb-4 bg-button-disabled-fill cursor-not-allowed';
+    'mb-11 text-button-unabled-fill mb-4 bg-button-disabled-fill cursor-not-allowed';
 
   const handleMouseEnter = (algo: string) => {
     clearTimeout(hideTooltipTimeout);
@@ -35,7 +37,7 @@ export default function Toolbox({
       setShowTooltip(null);
     }, 1200);
   };
-
+console.log({metadata})
   return (
     <section className='flex flex-col translate-y-1/2 justify-center font-abel text-lg tracking-wide'>
       {/* Error Level Analysis */}
@@ -109,9 +111,14 @@ export default function Toolbox({
           }}
           onMouseEnter={() => handleMouseEnter('Metadata')}
           onMouseLeave={handleMouseLeave}
-          colorVariant={enableButton ? 'light' : 'dark'}
-          className={enableButton ? buttonEnabledStyles : buttonDisabledStyles}
-          disabled={!enableButton}
+          colorVariant={enableButton && metadata ? 'light' : 'dark'}
+          className={
+            enableButton && metadata
+              ? buttonEnabledStyles
+              : buttonDisabledStyles
+          }
+          disabled={!metadata}
+         
         >
           Metadata
         </Button>
@@ -162,8 +169,29 @@ export default function Toolbox({
         )}
       </div>
 
-      {/* Apply All */}
+      {/* Geolocation */}
       <div className='relative'>
+        <Button
+          onClick={() => {
+            setSelectedAlgo('Geolocation');
+            setDisplayMetadata(false);
+          }}
+          onMouseEnter={() => handleMouseEnter('Geolocation')}
+          onMouseLeave={handleMouseLeave}
+          colorVariant={enableButton && metadata ? 'light' : 'dark'}
+          className={
+            enableButton && metadata
+              ? buttonEnabledStyles
+              : buttonDisabledStyles
+          }
+          disabled={!metadata}
+        >
+          Geolocation
+        </Button>
+      </div>
+
+      {/* Apply All */}
+      {/* <div className='relative'>
         <Button
           onClick={() => setSelectedAlgo('All')}
           onMouseEnter={() => handleMouseEnter('All')}
@@ -174,7 +202,7 @@ export default function Toolbox({
         >
           Apply All
         </Button>
-      </div>
+      </div> */}
     </section>
   );
 }
