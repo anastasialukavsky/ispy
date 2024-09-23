@@ -1,14 +1,25 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
+import React from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-export const Logo = () =>{
-  const navigate = useNavigate()
+export const Logo = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const getLogoColor = () => {
+    switch (location.pathname) {
+      case '/':
+        return 'public/assets/logggo.png';
+      default:
+        return 'public/assets/ispy_logo_light.png';
+    }
+  };
+
   const handleLogoClick = () => {
-    navigate('/')
-  }
+    navigate('/');
+  };
   return (
-    <div className='block w-14'>
-      <img src="public/assets/logggo.png" alt="" onClick={handleLogoClick}/>
+    <div className='block w-12'>
+      <img src={getLogoColor()} alt='' onClick={handleLogoClick} />
     </div>
-  )
-}
+  );
+};
