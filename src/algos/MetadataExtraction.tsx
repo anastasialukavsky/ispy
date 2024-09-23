@@ -10,20 +10,20 @@ interface Props {
   setMetadata: React.Dispatch<any>;
   weatherPrediction: string | null;
   setHistoricalWeather: React.Dispatch<React.SetStateAction<string | null>>;
-  historicalWeather: string | null;
+  historicalWeather?: string | null;
   setGeolocation: React.Dispatch<
     React.SetStateAction<{
       latitude: number;
       longitude: number;
     } | null>
   >;
-  geolocation: {
+  geolocation?: {
     latitude: number;
     longitude: number;
   } | null;
   setTamperingProbability: React.Dispatch<React.SetStateAction<number | null>>;
-  tamperingProbability: number | null;
-  setSoftwareUsed: React.Dispatch<React.SetStateAction<string | null>>;
+  tamperingProbability?: number | null;
+  setSoftwareUsed?: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 const MetadataExtraction = ({
@@ -32,20 +32,15 @@ const MetadataExtraction = ({
   setMetadata,
   weatherPrediction,
   setHistoricalWeather,
-  historicalWeather,
   setGeolocation,
-  geolocation,
   setTamperingProbability,
-  tamperingProbability,
-  setSoftwareUsed,
 }: Props) => {
   const [weatherCache, setWeatherCache] = useState<{
     [key: string]: string | null;
   }>({});
   const [fetchError, setFetchError] = useState<boolean>(false);
-  const apiCallInProgress = useRef(false); // Use this to ensure no duplicate requests are made
+  const apiCallInProgress = useRef(false); 
 
-  // Memoized fetch function to avoid recreating the function unnecessarily
   const fetchHistoricalWeather = useCallback(
     async (lat: number, lon: number, date: string) => {
       const cacheKey = `${lat}-${lon}-${date}`;
@@ -59,7 +54,8 @@ const MetadataExtraction = ({
           throw new Error('API key is missing');
         }
 
-        const url = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${lat},${lon}/${date}?key=${apiKey}`;
+        const url = 'https://google.com'
+        // const url = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${lat},${lon}/${date}?key=${apiKey}`;
         const response = await fetch(url);
 
         if (!response.ok) {
@@ -121,7 +117,6 @@ const MetadataExtraction = ({
         metadataTamperingScore = 50;
       }
 
-      // Use precomputed latitude and longitude if available
       const latitude = meta?.latitude || null;
       const longitude = meta?.longitude || null;
       const dateTime = meta?.DateTimeOriginal || meta?.CreateDate;
@@ -181,7 +176,7 @@ const MetadataExtraction = ({
     if (imageSrc && !fetchError) {
       extractMetadata();
     }
-  }, [imageSrc, extractMetadata, fetchError]);
+  }, [imageSrc, fetchError]);
 
   return (
     <div>
