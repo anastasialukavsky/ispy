@@ -56,7 +56,7 @@ console.log({disabled})
 
       {/* Tooltip for disabled state */}
       {showTooltip && disabled && (
-        <div className='absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 z-[250] bg-black text-white text-sm px-2 py-1 rounded'>
+        <div className='absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 z-[250] bg-black text-white text-sm px-2 py-1 rounded w-48 text-center'>
           Please upload an image first
         </div>
       )}
