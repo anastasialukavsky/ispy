@@ -27,6 +27,7 @@ export default function Landing() {
       const tl_01 = gsap.timeline({});
       const tl_02 = gsap.timeline({});
       const tl_03 = gsap.timeline({});
+      const tl_04 = gsap.timeline({});
       tl_01.from('.pic', {
         yPercent: -10,
         autoAlpha: 0,
@@ -237,8 +238,8 @@ export default function Landing() {
 
   return (
     <main className='flex w-full h-full min-h-[100vh]  flex-col items-center justify-center bg-primary-light-fill overflow-hidden'>
-      <section className='landing w-full h-full z-[100] relative pt-44 pb-24'>
-        <div className='relative w-full max-w-5xl h-[70vh] overflow-hidden flex items-center mx-auto'>
+      <section className='landing w-full h-full z-[100] relative pt-44'>
+        <div className='relative w-full max-w-6xl h-[75vh] overflow-hidden flex items-center mx-auto'>
           {/* Main bg */}
           <img
             src='public/assets/landing-bg.gif'
@@ -246,7 +247,7 @@ export default function Landing() {
             className='pic h-[70vh] w-full object-cover relative top-[-10%]'
           />
 
-          <h1 className='absolute -top-12 left-0 text-[8.2rem] h-full w-full uppercase font-smooch tracking-widest z-10 text-primary-dark-gray mix-blend-color-burn'>
+          <h1 className='absolute -top-12 left-0 text-[8.2rem] h-fit w-full uppercase font-smooch tracking-widest z-10 text-primary-dark-gray mix-blend-color-burn'>
             {'Expose the unseen'.split('').map((letter, index) => (
               <span
                 key={index}

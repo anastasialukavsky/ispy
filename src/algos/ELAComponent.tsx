@@ -99,13 +99,19 @@ export default function ELAComponent({
         setTamperingProbability(tamperingPercentage);
 
         let elaScore = tamperingPercentage / 100;
-        if (tamperingPercentage > 1) {
-          setTamperingResult('Potential forgery detected (splicing).');
+        if (tamperingPercentage > 35) {
+          setTamperingResult(
+            'Significant ELA discrepancies detected, potential tampering.'
+          );
+        } else if (tamperingPercentage > 1.5) {
+          setTamperingResult(
+            'Moderate ELA discrepancies detected. Some signs of potential image alterations.'
+          );
         } else {
-          setTamperingResult('No significant forgery detected.');
-          elaScore = 0;
+          setTamperingResult(
+            'Minimal ELA discrepancies, the image appears to have no significant alterations.'
+          );
         }
-
         onResult({ score: elaScore, algo: 'ELA' });
 
         originalCanvas.remove();
@@ -174,46 +180,46 @@ export default function ELAComponent({
     };
   }, [imageSrc, detectELA, setProcessing, setTamperingResult]);
 
- const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
-   const rect = processedCanvasRef.current!.getBoundingClientRect();
-   const x = e.clientX - rect.left;
-   const y = e.clientY - rect.top;
+  const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    const rect = processedCanvasRef.current!.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
 
-   const zoomSize = 150; 
-   const zoomFactor = 2; 
+    const zoomSize = 150;
+    const zoomFactor = 2;
 
-   const adjustedX = Math.max(
-     zoomSize / 2,
-     Math.min(x, rect.width - zoomSize / 2)
-   );
-   const adjustedY = Math.max(
-     zoomSize / 2,
-     Math.min(y, rect.height - zoomSize / 2)
-   );
+    const adjustedX = Math.max(
+      zoomSize / 2,
+      Math.min(x, rect.width - zoomSize / 2)
+    );
+    const adjustedY = Math.max(
+      zoomSize / 2,
+      Math.min(y, rect.height - zoomSize / 2)
+    );
 
-   setMousePosition({ x: adjustedX, y: adjustedY });
+    setMousePosition({ x: adjustedX, y: adjustedY });
 
-   const zoomCtx = zoomCanvasRef.current!.getContext('2d');
-   if (zoomCtx) {
-     zoomCtx.clearRect(
-       0,
-       0,
-       zoomCanvasRef.current!.width,
-       zoomCanvasRef.current!.height
-     );
-     zoomCtx.drawImage(
-       processedCanvasRef.current!,
-       adjustedX - zoomSize / 2,
-       adjustedY - zoomSize / 2,
-       zoomSize,
-       zoomSize,
-       0,
-       0,
-       zoomSize * zoomFactor,
-       zoomSize * zoomFactor
-     );
-   }
- };
+    const zoomCtx = zoomCanvasRef.current!.getContext('2d');
+    if (zoomCtx) {
+      zoomCtx.clearRect(
+        0,
+        0,
+        zoomCanvasRef.current!.width,
+        zoomCanvasRef.current!.height
+      );
+      zoomCtx.drawImage(
+        processedCanvasRef.current!,
+        adjustedX - zoomSize / 2,
+        adjustedY - zoomSize / 2,
+        zoomSize,
+        zoomSize,
+        0,
+        0,
+        zoomSize * zoomFactor,
+        zoomSize * zoomFactor
+      );
+    }
+  };
   const handleMouseLeave = () => {
     setMousePosition(null);
   };

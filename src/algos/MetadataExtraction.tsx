@@ -56,8 +56,8 @@ const MetadataExtraction = ({
           throw new Error('API key is missing');
         }
 
-        const url = 'https://google.com'
-        // const url = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${lat},${lon}/${date}?key=${apiKey}`;
+        // const url = 'https://google.com'
+        const url = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${lat},${lon}/${date}?key=${apiKey}`;
         const response = await fetch(url);
 
         if (!response.ok) {
