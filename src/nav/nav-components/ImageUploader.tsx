@@ -187,6 +187,7 @@ function ImageUploader() {
     }
   };
 
+  console.log({weatherPrediction})
   // console.log({ tamperingProbability });
   // console.log({ selectedAlgo });
   const overallProbability = calculateOverallProbability();
@@ -246,16 +247,17 @@ function ImageUploader() {
           )}
         </div>
 
-        {selectedAlgo === 'Weather Analizer' && 
+        {selectedAlgo === 'Weather Analizer' &&
           historicalWeather &&
           weatherPrediction &&
           geolocation && (
-            <div className='mt-5 text-lg'>
+            <div className='mt-5 text-lg text-white'>
               <p>
                 <strong>Historical Weather:</strong> {historicalWeather}
               </p>
               <p>
-                <strong>Predicted Weather:</strong> {weatherPrediction}
+                <strong>Deep learning weather analizer:</strong>{' '}
+                {weatherPrediction}
               </p>
             </div>
           )}
@@ -264,6 +266,7 @@ function ImageUploader() {
           !processing &&
           selectedAlgo !== 'Metadata' &&
           selectedAlgo !== 'Weather Analizer' &&
+          selectedAlgo !== 'ELA' &&
           selectedAlgo !== 'Geolocation' && (
             <p className='pt-6 text-lg'>
               <strong>Analysis Result for {selectedAlgo}:</strong>{' '}
@@ -272,6 +275,7 @@ function ImageUploader() {
           )}
         {tamperingProbability !== null &&
         selectedAlgo !== 'Metadata' &&
+        selectedAlgo !== 'ELA' &&
         selectedAlgo !== 'Weather Analizer' &&
         selectedAlgo !== 'Geolocation' ? (
           <div>
@@ -311,7 +315,6 @@ function ImageUploader() {
           </>
         )}
 
-  
         {/* {overallProbability !== null && (
           <div className='mt-5 text-center'>
             <h3 className='text-xl font-semibold text-primary-light-fill'>

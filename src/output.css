@@ -645,8 +645,8 @@ video {
   position: sticky;
 }
 
-.inset-0{
-  inset: 0px;
+.-top-12{
+  top: -3rem;
 }
 
 .bottom-0{
@@ -663,10 +663,6 @@ video {
 
 .left-1\/2{
   left: 50%;
-}
-
-.left-72{
-  left: 18rem;
 }
 
 .right-0{
@@ -687,66 +683,6 @@ video {
 
 .top-\[1\.5rem\]{
   top: 1.5rem;
-}
-
-.left-64{
-  left: 16rem;
-}
-
-.left-44{
-  left: 11rem;
-}
-
-.left-10{
-  left: 2.5rem;
-}
-
-.-left-10{
-  left: -2.5rem;
-}
-
-.-left-20{
-  left: -5rem;
-}
-
-.-right-20{
-  right: -5rem;
-}
-
-.right-20{
-  right: 5rem;
-}
-
-.top-20{
-  top: 5rem;
-}
-
-.-top-20{
-  top: -5rem;
-}
-
-.-top-0{
-  top: -0px;
-}
-
-.top-10{
-  top: 2.5rem;
-}
-
-.-top-10{
-  top: -2.5rem;
-}
-
-.-top-16{
-  top: -4rem;
-}
-
-.-top-14{
-  top: -3.5rem;
-}
-
-.-top-12{
-  top: -3rem;
 }
 
 .z-0{
@@ -879,32 +815,8 @@ video {
   height: 100%;
 }
 
-.h-screen{
-  height: 100vh;
-}
-
-.h-\[90vw\]{
-  height: 90vw;
-}
-
-.h-\[60vw\]{
-  height: 60vw;
-}
-
-.h-\[50vw\]{
-  height: 50vw;
-}
-
-.h-\[40vw\]{
-  height: 40vw;
-}
-
-.h-\[30vw\]{
-  height: 30vw;
-}
-
-.h-\[80vh\]{
-  height: 80vh;
+.h-\[75vh\]{
+  height: 75vh;
 }
 
 .min-h-\[100vh\]{
@@ -967,6 +879,10 @@ video {
   width: 40vw;
 }
 
+.w-\[90vw\]{
+  width: 90vw;
+}
+
 .w-fit{
   width: -moz-fit-content;
   width: fit-content;
@@ -974,34 +890,6 @@ video {
 
 .w-full{
   width: 100%;
-}
-
-.w-\[50vh\]{
-  width: 50vh;
-}
-
-.w-\[60vh\]{
-  width: 60vh;
-}
-
-.w-\[80vw\]{
-  width: 80vw;
-}
-
-.w-\[60vw\]{
-  width: 60vw;
-}
-
-.w-\[90vw\]{
-  width: 90vw;
-}
-
-.w-\[0vw\]{
-  width: 0vw;
-}
-
-.w-\[40\]{
-  width: 40;
 }
 
 .max-w-5xl{
@@ -1012,6 +900,18 @@ video {
   max-width: 50%;
 }
 
+.max-w-3xl{
+  max-width: 48rem;
+}
+
+.max-w-4xl{
+  max-width: 56rem;
+}
+
+.max-w-6xl{
+  max-width: 72rem;
+}
+
 .-translate-x-1\/2{
   --tw-translate-x: -50%;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
@@ -1019,11 +919,6 @@ video {
 
 .-translate-y-1\/2{
   --tw-translate-y: -50%;
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-}
-
-.translate-x-36{
-  --tw-translate-x: 9rem;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
@@ -1081,10 +976,6 @@ video {
   justify-content: flex-start;
 }
 
-.justify-end{
-  justify-content: flex-end;
-}
-
 .justify-center{
   justify-content: center;
 }
@@ -1103,10 +994,6 @@ video {
 
 .gap-6{
   gap: 1.5rem;
-}
-
-.gap-10{
-  gap: 2.5rem;
 }
 
 .self-start{
@@ -1191,6 +1078,11 @@ video {
   background-color: rgb(33 33 33 / var(--tw-bg-opacity));
 }
 
+.bg-red-400{
+  --tw-bg-opacity: 1;
+  background-color: rgb(248 113 113 / var(--tw-bg-opacity));
+}
+
 .object-cover{
   -o-object-fit: cover;
      object-fit: cover;
@@ -1257,6 +1149,14 @@ video {
   padding-bottom: 5rem;
 }
 
+.pb-24{
+  padding-bottom: 6rem;
+}
+
+.pb-28{
+  padding-bottom: 7rem;
+}
+
 .pb-3{
   padding-bottom: 0.75rem;
 }
@@ -1271,6 +1171,10 @@ video {
 
 .pl-20{
   padding-left: 5rem;
+}
+
+.pl-44{
+  padding-left: 11rem;
 }
 
 .pl-96{
@@ -1301,6 +1205,10 @@ video {
   padding-top: 1rem;
 }
 
+.pt-44{
+  padding-top: 11rem;
+}
+
 .pt-5{
   padding-top: 1.25rem;
 }
@@ -1321,60 +1229,20 @@ video {
   padding-top: 9rem;
 }
 
-.pb-28{
-  padding-bottom: 7rem;
+.pt-52{
+  padding-top: 13rem;
 }
 
-.pt-32{
-  padding-top: 8rem;
+.pt-3{
+  padding-top: 0.75rem;
 }
 
-.pt-44{
-  padding-top: 11rem;
+.pb-14{
+  padding-bottom: 3.5rem;
 }
 
-.pt-\[20\%\]{
-  padding-top: 20%;
-}
-
-.pt-96{
-  padding-top: 24rem;
-}
-
-.pt-56{
-  padding-top: 14rem;
-}
-
-.pl-44{
-  padding-left: 11rem;
-}
-
-.pt-64{
-  padding-top: 16rem;
-}
-
-.pb-96{
-  padding-bottom: 24rem;
-}
-
-.pb-64{
-  padding-bottom: 16rem;
-}
-
-.pb-72{
-  padding-bottom: 18rem;
-}
-
-.pb-44{
-  padding-bottom: 11rem;
-}
-
-.pb-36{
-  padding-bottom: 9rem;
-}
-
-.pb-24{
-  padding-bottom: 6rem;
+.pb-10{
+  padding-bottom: 2.5rem;
 }
 
 .text-center{
@@ -1422,8 +1290,8 @@ video {
   line-height: 1;
 }
 
-.text-\[5vw\]{
-  font-size: 5vw;
+.text-\[8\.2rem\]{
+  font-size: 8.2rem;
 }
 
 .text-lg{
@@ -1439,52 +1307,6 @@ video {
 .text-xl{
   font-size: 1.25rem;
   line-height: 1.75rem;
-}
-
-.text-7xl{
-  font-size: 4.5rem;
-  line-height: 1;
-}
-
-.text-8xl{
-  font-size: 6rem;
-  line-height: 1;
-}
-
-.text-\[9rem\]{
-  font-size: 9rem;
-}
-
-.text-\[7rem\]{
-  font-size: 7rem;
-}
-
-.text-\[4rem\]{
-  font-size: 4rem;
-}
-
-.text-\[5rem\]{
-  font-size: 5rem;
-}
-
-.text-\[6rem\]{
-  font-size: 6rem;
-}
-
-.text-\[8rem\]{
-  font-size: 8rem;
-}
-
-.text-\[8\.5rem\]{
-  font-size: 8.5rem;
-}
-
-.text-\[8\.2rem\]{
-  font-size: 8.2rem;
-}
-
-.text-\[8\.3rem\]{
-  font-size: 8.3rem;
 }
 
 .font-bold{
@@ -1534,81 +1356,8 @@ video {
   color: rgb(255 255 255 / var(--tw-text-opacity));
 }
 
-.text-black{
-  --tw-text-opacity: 1;
-  color: rgb(0 0 0 / var(--tw-text-opacity));
-}
-
-.text-\[\]{
-  color: ;
-}
-
-.mix-blend-multiply{
-  mix-blend-mode: multiply;
-}
-
-.mix-blend-screen{
-  mix-blend-mode: screen;
-}
-
-.mix-blend-overlay{
-  mix-blend-mode: overlay;
-}
-
-.mix-blend-darken{
-  mix-blend-mode: darken;
-}
-
-.mix-blend-lighten{
-  mix-blend-mode: lighten;
-}
-
-.mix-blend-color-dodge{
-  mix-blend-mode: color-dodge;
-}
-
 .mix-blend-color-burn{
   mix-blend-mode: color-burn;
-}
-
-.mix-blend-hard-light{
-  mix-blend-mode: hard-light;
-}
-
-.mix-blend-soft-light{
-  mix-blend-mode: soft-light;
-}
-
-.mix-blend-difference{
-  mix-blend-mode: difference;
-}
-
-.mix-blend-exclusion{
-  mix-blend-mode: exclusion;
-}
-
-.mix-blend-hue{
-  mix-blend-mode: hue;
-}
-
-.mix-blend-saturation{
-  mix-blend-mode: saturation;
-}
-
-.mix-blend-color{
-  mix-blend-mode: color;
-}
-
-.mix-blend-luminosity{
-  mix-blend-mode: luminosity;
-}
-
-.mix-blend-plus-darker{
-  mix-blend-mode: plus-darker;
-}
-
-.mix-blend-plus-lighter{
-  mix-blend-mode: plus-lighter;
 }
 
 .blur{

@@ -25,7 +25,7 @@ export default function WeatherPrediction({ imageSrc, setWeatherPrediction, setP
   const predictWeather = async () => {
     if (!model || !imageSrc) return;
 
-    setProcessing(true)
+    // setProcessing(true)
     const imgElement = document.createElement('img');
     imgElement.src = imageSrc;
     imgElement.onload = async () => {
@@ -42,12 +42,11 @@ export default function WeatherPrediction({ imageSrc, setWeatherPrediction, setP
         const predictedClass = prediction.argMax(-1).dataSync()[0];
         const weatherClasses = ['Cloudy', 'Rainy', 'Sunny'];
         const predictedWeather = weatherClasses[predictedClass];
+        console.log('pred', predictWeather)
         setWeatherPrediction(predictedWeather);
       } catch(error) {
         console.error('Prediction failed:', error);
-      } finally {
-        setProcessing(false)
-      }
+      } 
     };
   };
 

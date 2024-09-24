@@ -8,9 +8,9 @@ export const Logo = () => {
   const getLogoColor = () => {
     switch (location.pathname) {
       case '/':
-        return 'public/assets/logggo.png';
+        return 'public/assets/logo2.png';
       default:
-        return 'public/assets/ispy_logo_light.png';
+        return 'public/assets/logo01.png';
     }
   };
 
