@@ -9,7 +9,10 @@ gsap.registerPlugin(ScrollTrigger);
 export default function Landing() {
   const navigate = useNavigate();
 
-  const handleButtonClick = () => {
+  const navigateToAbout = () => {
+    navigate('/about');
+  };
+  const navigateToUpload = () => {
     navigate('/upload');
   };
   useLayoutEffect(() => {
@@ -64,7 +67,7 @@ export default function Landing() {
           end: 'center center',
           scrub: 2,
           pin: true,
-          markers: true,
+          // markers: true,
         },
       });
 
@@ -79,7 +82,114 @@ export default function Landing() {
           start: 'center center',
           end: '+=100%',
           scrub: true,
-          markers: true,
+          // markers: true,
+        },
+      });
+
+      tl.from('.about-header', {
+        xPercent: -40,
+        ease: 'expo',
+        duration: 2,
+
+        scrollTrigger: {
+          trigger: '.about',
+          // markers: true,
+          start: 'top 90%',
+          end: 'bottom 99%',
+          scrub: true,
+        },
+      });
+      tl.from('.about-subheader-1', {
+        xPercent: 40,
+        ease: 'expo',
+        duration: 2,
+
+        scrollTrigger: {
+          trigger: '.about',
+          // markers: true,
+          start: 'top 90%',
+          end: 'bottom 99%',
+          scrub: true,
+        },
+      });
+      tl.from('.article-1', {
+        xPercent: 50,
+        ease: 'expo',
+        duration: 1,
+
+        scrollTrigger: {
+          trigger: '.about',
+          // markers: true,
+          start: 'top 90%',
+          end: 'bottom 99%',
+          scrub: true,
+        },
+      });
+      tl.from('.about-img-1', {
+        yPercent: 60,
+        ease: 'expo',
+        duration: 2,
+
+        scrollTrigger: {
+          trigger: '.about',
+          // markers: true,
+          start: 'top center',
+          end: 'bottom 99%',
+          scrub: 1,
+        },
+      });
+
+      tl.from('.about-subheader-2', {
+        xPercent: -20,
+        ease: 'expo',
+        duration: 2,
+
+        scrollTrigger: {
+          trigger: '.about',
+          // markers: true,
+          start: 'center 70%',
+          end: 'bottom bottom',
+          scrub: 2,
+        },
+      });
+
+      tl.from('.article-2', {
+        xPercent: -40,
+        ease: 'expo',
+        duration: 5,
+
+        scrollTrigger: {
+          trigger: '.about',
+          // markers: true,
+          start: 'center 90%',
+          end: 'bottom bottom',
+          scrub: 3,
+        },
+      });
+      tl.from('.about-img-2', {
+        yPercent: 60,
+        ease: 'expo',
+        duration: 4,
+
+        scrollTrigger: {
+          trigger: '.about',
+          // markers: true,
+          start: 'top top',
+          end: 'bottom 99%',
+          scrub: 3,
+        },
+      });
+      tl.from('.about-cta-btn', {
+        yPercent: 10,
+        ease: 'power1',
+        duration: 4,
+        opacity: 0,
+        scrollTrigger: {
+          trigger: '.about',
+          // markers: true,
+          start: 'center center',
+          end: 'bottom 99%',
+          scrub: 2,
         },
       });
     });
@@ -127,9 +237,16 @@ export default function Landing() {
 
   return (
     <main className='flex w-full h-full min-h-[100vh]  flex-col items-center justify-center bg-primary-light-fill overflow-hidden'>
-      <section className='landing w-full h-full z-[100] relative'>
-        <div className='relative w-full pt-20'>
-          <h1 className='absolute top-18 left-72 text-[5vw] uppercase font-smooch tracking-widest z-10 text-primary-dark-gray mix-blend-color-burn'>
+      <section className='landing w-full h-full z-[100] relative pt-44 pb-24'>
+        <div className='relative w-full max-w-5xl h-[70vh] overflow-hidden flex items-center mx-auto'>
+          {/* Main bg */}
+          <img
+            src='public/assets/landing-bg.gif'
+            alt=''
+            className='pic h-[70vh] w-full object-cover relative top-[-10%]'
+          />
+
+          <h1 className='absolute -top-12 left-0 text-[8.2rem] h-full w-full uppercase font-smooch tracking-widest z-10 text-primary-dark-gray mix-blend-color-burn'>
             {'Expose the unseen'.split('').map((letter, index) => (
               <span
                 key={index}
@@ -139,29 +256,21 @@ export default function Landing() {
               </span>
             ))}
           </h1>
-        </div>
-        <div className='flex items-center pb-20 pt-10 h-fit w-full justify-center  mx-auto  translate-x-36'>
-          <div className='relative w-full max-w-5xl h-[70vh] overflow-hidden flex items-center '>
-            <img
-              src='public/assets/landing-bg.gif'
-              alt=''
-              className='pic h-[70vh] w-full object-cover relative top-[-10%]'
-            />
 
-            <div className='cta-section w-fit relative flex items-end justify-center pl-20 '>
-              <div className='text-end flex flex-col items-end'>
-                <p className='font-abel text-xl'>
-                  Reveal the truth in every pixel. Detect image tampering with
-                  precision and confidence.
-                </p>
-                <Button
-                  onClick={handleButtonClick}
-                  className='w-44 font-bench text-xl mt-10'
-                  colorVariant='dark'
-                >
-                  get started
-                </Button>
-              </div>
+          {/* CTA Section */}
+          <div className='cta-section w-fit relative flex items-end justify-center pl-20 '>
+            <div className='text-end flex flex-col items-end'>
+              <p className='font-abel text-xl'>
+                Reveal the truth in every pixel. Detect image tampering with
+                precision and confidence.
+              </p>
+              <Button
+                onClick={navigateToUpload}
+                className='w-44 font-bench text-xl mt-10'
+                colorVariant='dark'
+              >
+                get started
+              </Button>
             </div>
           </div>
         </div>
@@ -169,23 +278,23 @@ export default function Landing() {
 
       <section className='about z-[150] h-fit w-full font-smooch text-lg tracking-wider'>
         {/* Angled background */}
-        <div className=' clip-path-custom w-full bg-primary-dark-gray py-28 flex flex-col items-center'>
-          <h1 className='text-5xl font-bold text-white pl-10 self-start'>
-            what is it all about?..
-          </h1>
-          <div className='flex pt-16 text-white  w-full 5xl:w-[70%] justify-between px-64 items-start gap-14'>
-            <div className='w-full h-full pr-10 '>
+        <div className=' clip-path-custom w-full bg-primary-dark-gray pb-28 pt-44 flex flex-col items-center'>
+          <h2 className='about-header text-5xl font-bold text-white pl-44 self-start'>
+            What is it all about?..
+          </h2>
+          <div className='flex pt-20 text-white  w-full 5xl:w-[70%] justify-between px-64 items-start gap-14'>
+            <div className='about-img-1 pr-10 w-[90vw]'>
               <img
-                src='public/assets/bg.jpg'
+                src='public/assets/bg.webp'
                 alt=''
-                className='w-[40vh] object-cover'
+                className='w-full object-cover'
               />
             </div>
             <div className=' flex flex-col  '>
-              <h3 className='text-primary-light-fill text-3xl pt-[10%] pb-5'>
+              <h3 className='about-subheader-1 text-primary-light-fill text-3xl pt-[10%] pb-5'>
                 A picture is worth a thousand words...
               </h3>
-              <p className='  '>
+              <p className='article-1'>
                 But what if that picture isn't telling the truth? In an era
                 where images are easily manipulated, the challenge of
                 distinguishing reality from fabrication has grown immensely.
@@ -198,15 +307,15 @@ export default function Landing() {
               </p>
             </div>
           </div>
-          <div className='flex pt-16 text-white  w-full 5xl:w-[70%] justify-between px-64 items-start gap-14 flex-row-reverse'>
-            <div className='h-full pr-10 '>
-              <img src='public/assets/bg1.jpg' alt='' className='w-full' />
+          <div className='flex pt-44 text-white  w-full 5xl:w-[70%] justify-between px-64 items-start gap-14 flex-row-reverse'>
+            <div className='about-img-2 h-full pr-10 '>
+              <img src='public/assets/bg1.webp' alt='' className='w-full' />
             </div>
             <div className=' flex flex-col  '>
-              <h3 className='text-primary-light-fill text-3xl pt-[10%] pb-5'>
+              <h3 className='about-subheader-2 text-primary-light-fill text-3xl pt-[10%] pb-5'>
                 The power of digital analysis
               </h3>
-              <p className=' '>
+              <p className='article-2'>
                 Some images may not display obvious signs of tampering, leaving
                 those methods inconclusive. That’s where data-driven analysis
                 comes into play. Hidden within the digital makeup of an image
@@ -220,10 +329,10 @@ export default function Landing() {
                 that what we see aligns with reality and empowering us to verify
                 the integrity of images with confidence.
               </p>
-              <div className='w-44 pt-10'>
+              <div className='about-cta-btn w-44 pt-10'>
                 <Button
-                  onClick={handleButtonClick}
-                  className='w-full font-bench text-lg'
+                  onClick={navigateToAbout}
+                  className='w-full font-bench text-xl'
                   colorVariant='light'
                 >
                   learn more
