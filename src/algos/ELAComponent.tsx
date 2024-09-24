@@ -123,7 +123,7 @@ export default function ELAComponent({
         setProcessing(false);
       }
     },
-    [onResult, setTamperingResult, setProcessing]
+    [onResult, setTamperingResult, setProcessing, setTamperingProbability]
   );
 
   const processImage = useCallback(() => {

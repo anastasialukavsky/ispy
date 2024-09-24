@@ -80,7 +80,7 @@ export default function Navbar() {
       </ul>
 
       {/* Bottom Border */}
-      {/* <div className='absolute bottom-0 right-0 h-[1px] w-full bg-black'></div> */}
+      <div className='absolute bottom-0 right-0 h-[1px] w-full bg-black'></div>
     </nav>
   );
 }
