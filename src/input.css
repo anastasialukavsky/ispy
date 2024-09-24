@@ -73,10 +73,10 @@ button:focus-visible {
 @tailwind utilities;
 
 .clip-path-custom {
-  clip-path: polygon(0 0, 100% 10%, 100% 100%, 0% 100%);
+  clip-path: polygon(0 0, 100% 5%, 100% 100%, 0% 100%);
 }
 
-/* html.lenis, html.lenis body {
+html.lenis, html.lenis body {
   height: auto;
 }
 
@@ -94,16 +94,9 @@ button:focus-visible {
 
 .lenis.lenis-smooth iframe {
   pointer-events: none;
-} */
+}
 
 
-/* .navbar {
-  box-sizing: border-box;
-} */
-
-/* .navbar {
- background-color: #242424;
-} */
 
 .loader {
         transform: rotateZ(45deg);
@@ -111,6 +104,7 @@ button:focus-visible {
         border-radius: 50%;
         width: 48px;
         height: 48px;
+          position: absolute;
         color: #fff;
       }
         .loader:before,

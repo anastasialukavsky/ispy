@@ -35,7 +35,6 @@ export const Button = ({
     if (onMouseLeave) onMouseLeave();
   };
 
-console.log({disabled})
   return (
     <div
       className={`relative group ${className}`}

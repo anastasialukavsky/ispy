@@ -18,7 +18,7 @@ export const Logo = () => {
     navigate('/');
   };
   return (
-    <div className='block w-12'>
+    <div className='block w-10'>
       <img src={getLogoColor()} alt='' onClick={handleLogoClick} />
     </div>
   );
