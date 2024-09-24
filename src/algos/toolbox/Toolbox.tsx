@@ -60,7 +60,7 @@ export default function Toolbox({
             href={`${currentOrigin}/about/Error-Level-Analysis`}
             target='_blank'
             rel='noopener noreferrer'
-            className='absolute w-10 top-[1.5rem] right-[-4.5rem] transform -translate-y-1/2 z-10 '
+            className='absolute w-10 top-[1.5rem] right-[-4.8rem] transform -translate-y-1/2 z-10 '
           >
             <img
               src='public/icons/brain-bulb.svg'
@@ -91,7 +91,7 @@ export default function Toolbox({
             href={`${currentOrigin}/about/Noise-Analysis`}
             target='_blank'
             rel='noopener noreferrer'
-            className='absolute w-10 top-[1.5rem] right-[-4.5rem] transform -translate-y-1/2 z-10 '
+            className='absolute w-10 top-[1.5rem] right-[-4.8rem] transform -translate-y-1/2 z-10 '
           >
             <img
               src='public/icons/brain-bulb.svg'
@@ -118,7 +118,6 @@ export default function Toolbox({
               : buttonDisabledStyles
           }
           disabled={!metadata}
-         
         >
           Metadata
         </Button>
@@ -127,7 +126,7 @@ export default function Toolbox({
             href={`${currentOrigin}/about/Metadata-Extraction`}
             target='_blank'
             rel='noopener noreferrer'
-            className='absolute w-10 top-[1.5rem] right-[-4.5rem] transform -translate-y-1/2 z-10 '
+            className='absolute w-10 top-[1.5rem] right-[-4.8rem] transform -translate-y-1/2 z-10 '
           >
             <img
               src='public/icons/brain-bulb.svg'
@@ -158,7 +157,7 @@ export default function Toolbox({
             href={`${currentOrigin}/about/Convolutional-Neural-Network`}
             target='_blank'
             rel='noopener noreferrer'
-            className='absolute w-10 top-[1.5rem] right-[-4.5rem] transform -translate-y-1/2 z-10'
+            className='absolute w-10 top-[1.5rem] right-[-4.8rem] transform -translate-y-1/2 z-10'
           >
             <img
               src='public/icons/brain-bulb.svg'

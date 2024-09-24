@@ -9,6 +9,7 @@ import DefaultResult from '../../algos/DefaultResult';
 import exifr from 'exifr';
 import Loader from '../../UI/Loader';
 import GeolocationDisplay from '../../algos/GeolocationDisplay';
+import { div } from '@tensorflow/tfjs';
 
 interface Result {
   score: number;
@@ -58,6 +59,8 @@ function ImageUploader() {
           setDisplayMetadata(false);
           setEnableButton(true);
           setImageUploaded(true);
+          setTamperingProbability(null);
+          setProcessing(false)
         };
         reader.readAsDataURL(file);
       }
@@ -74,13 +77,14 @@ function ImageUploader() {
     if (!selectedImage) return;
 
     try {
+      // setProcessing(true)
       const file = await fetch(selectedImage).then((res) => res.blob());
       const meta = await exifr.parse(file);
 
       if (meta) setMetadata(meta);
       else setMetadataReady(false);
 
-      console.log({ meta });
+      // console.log({ meta });
       if (meta?.latitude && meta?.longitude) {
         setGeolocation({
           latitude: meta.latitude,
@@ -91,9 +95,9 @@ function ImageUploader() {
       setMetadataReady(true);
       setDisplayMetadata(false);
     } catch (error) {
-     setMetadataReady(false);
-     setMetadata(null);
-     setGeolocation(null);
+      setMetadataReady(false);
+      setMetadata(null);
+      setGeolocation(null);
       console.log('Error extracting metadata:', error);
     }
   };
@@ -117,7 +121,8 @@ function ImageUploader() {
     return totalScore / results.length;
   };
 
-  console.log({ softwareUsed });
+  // console.log({ softwareUsed });
+  console.log({processing})
   const renderSelectedAlgo = () => {
     switch (selectedAlgo) {
       case 'ELA':
@@ -158,6 +163,7 @@ function ImageUploader() {
             setTamperingProbability={setTamperingProbability}
             tamperingProbability={tamperingProbability}
             setSoftwareUsed={setSoftwareUsed}
+            setProcessing={setProcessing}
           />
         );
       case 'Geolocation':
@@ -171,6 +177,7 @@ function ImageUploader() {
           <WeatherPrediction
             imageSrc={selectedImage}
             setWeatherPrediction={setWeatherPrediction}
+            setProcessing={setProcessing}
           />
         ) : (
           <p>Extracting metadata... Please wait.</p>
@@ -180,8 +187,8 @@ function ImageUploader() {
     }
   };
 
-  console.log({ tamperingProbability });
-  console.log({ selectedAlgo });
+  // console.log({ tamperingProbability });
+  // console.log({ selectedAlgo });
   const overallProbability = calculateOverallProbability();
 
   return (
@@ -239,14 +246,11 @@ function ImageUploader() {
           )}
         </div>
 
-        {processing ? (
-          <Loader />
-        ) : (
-          selectedAlgo === 'Weather Analizer' &&
+        {selectedAlgo === 'Weather Analizer' && 
           historicalWeather &&
           weatherPrediction &&
           geolocation && (
-            <div className='mt-5'>
+            <div className='mt-5 text-lg'>
               <p>
                 <strong>Historical Weather:</strong> {historicalWeather}
               </p>
@@ -254,25 +258,24 @@ function ImageUploader() {
                 <strong>Predicted Weather:</strong> {weatherPrediction}
               </p>
             </div>
-          )
-        )}
+          )}
 
         {tamperingResult &&
-        !processing &&
-        selectedAlgo !== 'Metadata' &&
-        selectedAlgo !== 'Geolocation' ? (
-          <p className='pt-6'>
-            <strong>Analysis Result for {selectedAlgo}:</strong>{' '}
-            {tamperingResult}
-          </p>
-        ) : (
-          <Loader />
-        )}
+          !processing &&
+          selectedAlgo !== 'Metadata' &&
+          selectedAlgo !== 'Weather Analizer' &&
+          selectedAlgo !== 'Geolocation' && (
+            <p className='pt-6 text-lg'>
+              <strong>Analysis Result for {selectedAlgo}:</strong>{' '}
+              {tamperingResult}
+            </p>
+          )}
         {tamperingProbability !== null &&
         selectedAlgo !== 'Metadata' &&
+        selectedAlgo !== 'Weather Analizer' &&
         selectedAlgo !== 'Geolocation' ? (
           <div>
-            <p>
+            <p className='text-lg'>
               Approximate Tampering Probability:{' '}
               {tamperingProbability.toFixed(2)}%
             </p>
@@ -282,9 +285,11 @@ function ImageUploader() {
         {metadata && displayMetadata && (
           <div>
             <h4 className='text-primary-light-fill text-lg pt-5 text-center'>
-              Metadata Results:
+              {!processing && 'Metadata Results: '}
             </h4>
-            <pre className='text-sm'>{JSON.stringify(metadata, null, 2)}</pre>
+            <pre className='text-sm pb-20'>
+              {JSON.stringify(metadata, null, 2)}
+            </pre>
           </div>
         )}
 
@@ -306,6 +311,7 @@ function ImageUploader() {
           </>
         )}
 
+  
         {/* {overallProbability !== null && (
           <div className='mt-5 text-center'>
             <h3 className='text-xl font-semibold text-primary-light-fill'>

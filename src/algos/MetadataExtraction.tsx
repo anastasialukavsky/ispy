@@ -24,6 +24,7 @@ interface Props {
   setTamperingProbability: React.Dispatch<React.SetStateAction<number | null>>;
   tamperingProbability?: number | null;
   setSoftwareUsed?: React.Dispatch<React.SetStateAction<string | null>>;
+  setProcessing: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const MetadataExtraction = ({
@@ -34,6 +35,7 @@ const MetadataExtraction = ({
   setHistoricalWeather,
   setGeolocation,
   setTamperingProbability,
+  setProcessing
 }: Props) => {
   const [weatherCache, setWeatherCache] = useState<{
     [key: string]: string | null;
@@ -89,7 +91,8 @@ const MetadataExtraction = ({
     apiCallInProgress.current = true; 
 
     try {
-      console.log('Fetching image metadata...');
+      // console.log('Fetching image metadata...');
+      // setProcessing(true)
       const file = await fetch(imageSrc).then((res) => {
         if (!res.ok) {
           throw new Error(`Error fetching image: ${res.statusText}`);
@@ -102,11 +105,10 @@ const MetadataExtraction = ({
         throw new Error('Failed to extract metadata from image.');
       }
 
-      console.log('Extracted metadata:', meta);
       setMetadata(meta);
 
       const softwareUsed = meta?.Software || '';
-      console.log({softwareUsed})
+      // console.log({softwareUsed})
       let metadataTamperingScore = 0;
       if (
         softwareUsed &&
@@ -158,6 +160,7 @@ const MetadataExtraction = ({
     } catch (error) {
       console.error('Error extracting metadata:', error);
     } finally {
+      // setProcessing(false)
       apiCallInProgress.current = false;
     }
   }, [
@@ -168,6 +171,7 @@ const MetadataExtraction = ({
     setGeolocation,
     setHistoricalWeather,
     weatherPrediction,
+    // setProcessing,
     // setSoftwareUsed,
     fetchError,
   ]);

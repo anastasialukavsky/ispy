@@ -56,17 +56,17 @@ export default function NoiseAnalysisComponent({
   const detectNoiseAndEdges = useCallback(
     (srcMat: cv.Mat, width: number, height: number) => {
       try {
-        console.log('Starting image processing...');
+        // console.log('Starting image processing...');
 
         // Step 1: Convert image to grayscale
         const grayMat = new cv.Mat();
         cv.cvtColor(srcMat, grayMat, cv.COLOR_RGBA2GRAY);
-        console.log('Grayscale conversion done.');
+        // console.log('Grayscale conversion done');
 
         // Step 2: Apply Gaussian blur
         const blurredMat = new cv.Mat();
         cv.GaussianBlur(grayMat, blurredMat, new cv.Size(5, 5), 0);
-        console.log('Gaussian blur applied.');
+        // console.log('Gaussian blur applied');
 
         // Display the processed image (grayscale)
         cv.imshow(processedCanvasRef.current!, grayMat);
@@ -74,6 +74,19 @@ export default function NoiseAnalysisComponent({
         // Calculate noise score
         const noiseScore = calculateNoiseScore(grayMat, blurredMat);
 
+        if (noiseScore > 0.5) {
+          setTamperingResult(
+            'Significant noise levels detected, potential tampering.'
+          );
+        } else if (noiseScore > 0.2) {
+          setTamperingResult(
+            'Moderate noise levels detected. Some signs of potential image alterations.'
+          );
+        } else {
+          setTamperingResult(
+            'Minimal noise detected, The image appears to have no significant alterations.'
+          );
+        }
         // Output the result to the parent component
         onResult({ score: noiseScore, algo: 'Noise Analysis' });
 
@@ -87,7 +100,7 @@ export default function NoiseAnalysisComponent({
         console.error('Error in detectNoiseAndEdges:', error);
         setTamperingResult('An error occurred during noise and edge analysis.');
         setProcessing(false);
-        onResult({ score: 1, algo: 'Noise Analysis' }); 
+        onResult({ score: 1, algo: 'Noise Analysis' });
       }
     },
     [
