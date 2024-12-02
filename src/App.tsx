@@ -8,6 +8,8 @@ import Account from './nav/nav-components/Account';
 import ImageUploader from './nav/nav-components/ImageUploader';
 import './global.css';
 import Lenis from 'lenis';
+import SignUp from './nav/nav-components/signUp/SignUp';
+import SignIn from './nav/nav-components/signIn/SignIn';
 
 function App() {
   const lenis = new Lenis();
@@ -28,6 +30,9 @@ function App() {
           <Route path='/about/*' element={<About />} />
           <Route path='/account' element={<Account />} />
           <Route path='/upload' element={<ImageUploader />} />
+          <Route path='/auth/signup' element={<SignUp />} />
+          <Route path='/auth/signin' element={<SignIn />} />
+
         </Routes>
       </Router>
     </OpenCvProvider>

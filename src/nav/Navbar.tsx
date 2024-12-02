@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { Logo } from '../UI';
+import { useAuth } from '../context/AuthContext';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
-
+ const { isAuthenticated } = useAuth();
   // Function to determine the background color based on route
   const getNavbarColor = () => {
     switch (location.pathname) {
@@ -41,9 +42,9 @@ export default function Navbar() {
   // Function to determine NavLink styles based on route
   const getNavlinkColor = () => {
     if (location.pathname === '/') {
-      return 'text-primary-dark-gray transition-transform duration-300 transform relative after:content-[""] after:absolute after:left-0 after:bottom-0 after:w-0 after:h-[2px] after:bg-primary-dark-gray after:transition-all after:duration-300 hover:after:w-full';
+      return 'text-primary-dark-gray transition-transform duration-300 transform relative after:content-[""] after:absolute after:left-0 after:bottom-0 after:w-0 after:h-[2px] after:bg-primary-dark-gray after:transition-all after:duration-300 hover:after:w-full cursor-pointer';
     }
-    return 'text-white hover:text-white transition-transform duration-300 transform relative after:content-[""] after:absolute after:left-0 after:bottom-0 after:w-0 after:h-[2px] after:bg-white after:transition-all after:duration-300 hover:after:w-full';
+    return 'text-white hover:text-white transition-transform duration-300 transform relative after:content-[""] after:absolute after:left-0 after:bottom-0 after:w-0 after:h-[2px] after:bg-white after:transition-all after:duration-300 hover:after:w-full cursor-pointer';
   };
 
   return (
@@ -72,11 +73,24 @@ export default function Navbar() {
             about
           </NavLink>
         </li>
-        <li>
-          <NavLink to='/account' className={getNavlinkColor()}>
-            account
+        {!isAuthenticated ? (
+          <li>
+            <NavLink to='/auth/signin' className={getNavlinkColor()}>
+              sign in
+            </NavLink>
+          </li>
+        ) : (
+          <li>
+            <NavLink to='/account' className={getNavlinkColor()}>
+              account
+            </NavLink>
+          </li>
+        )}
+        {/* <li>
+          <NavLink to='/auth/signup' className={getNavlinkColor()}>
+            sign up
           </NavLink>
-        </li>
+        </li> */}
       </ul>
 
       {/* Bottom Border */}
