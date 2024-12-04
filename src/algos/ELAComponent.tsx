@@ -8,10 +8,11 @@ import React, {
 } from 'react';
 import cv from '@techstark/opencv-js';
 import Loader from '../UI/Loader';
+import { Result } from '../nav/nav-components/ImageUploader';
 
 interface ELAComponentProps {
   imageSrc: string | null;
-  onResult: (result: { score: number; algo: string }) => void;
+  onResult: (result: Result) => void;
   tamperingResult: string | null;
   setTamperingResult: Dispatch<SetStateAction<string | null>>;
   processing: boolean;
@@ -112,7 +113,12 @@ export default function ELAComponent({
             'Minimal ELA discrepancies, the image appears to have no significant alterations.'
           );
         }
-        onResult({ score: elaScore, algo: 'ELA' });
+        onResult({
+          score: elaScore,
+          algo: 'ELA',
+          tamperingLikelihood: tamperingPercentage,
+          detectedEla: tamperingPercentage > 1.5,
+        });
 
         originalCanvas.remove();
         recompressedCanvas.remove();

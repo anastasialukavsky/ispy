@@ -5,15 +5,25 @@ interface WeatherPredictionProps {
   imageSrc: string | null;
   setWeatherPrediction: React.Dispatch<React.SetStateAction<string | null>>;
   setProcessing: React.Dispatch<React.SetStateAction<boolean>>;
+   savedImageId?: number | null;
+  saveDeepLearningWeatherResult?: (imageId: number, deepLearningWeather: string) => Promise<void>;
 }
 
-export default function WeatherPrediction({ imageSrc, setWeatherPrediction, setProcessing }: WeatherPredictionProps)  {
+export default function WeatherPrediction({
+  imageSrc,
+  setWeatherPrediction,
+  setProcessing,
+  savedImageId,
+  saveDeepLearningWeatherResult,
+}: WeatherPredictionProps) {
   const [model, setModel] = useState<tf.GraphModel | null>(null);
 
   useEffect(() => {
     const loadModel = async () => {
       try {
-        const loadedModel = await tf.loadGraphModel('models/weather_model_tfjs/model.json');
+        const loadedModel = await tf.loadGraphModel(
+          'models/weather_model_tfjs/model.json'
+        );
         setModel(loadedModel);
       } catch (error) {
         console.error('Error loading model:', error);
@@ -30,35 +40,38 @@ export default function WeatherPrediction({ imageSrc, setWeatherPrediction, setP
     imgElement.src = imageSrc;
     imgElement.onload = async () => {
       try {
-
         const tensor = tf.browser
-        .fromPixels(imgElement)
-        .resizeBilinear([299, 299]) // Adjust for model's input size
-        .toFloat()
-        .div(255)
-        .expandDims(0); // Add batch dimension
-        
+          .fromPixels(imgElement)
+          .resizeBilinear([299, 299]) // Adjust for model's input size
+          .toFloat()
+          .div(255)
+          .expandDims(0); // Add batch dimension
+
         const prediction = model.predict(tensor) as tf.Tensor;
         const predictedClass = prediction.argMax(-1).dataSync()[0];
         const weatherClasses = ['Cloudy', 'Rainy', 'Sunny'];
         const predictedWeather = weatherClasses[predictedClass];
-        console.log('pred', predictWeather)
         setWeatherPrediction(predictedWeather);
-      } catch(error) {
+
+        if (savedImageId && saveDeepLearningWeatherResult) {
+          await saveDeepLearningWeatherResult(savedImageId, predictedWeather);
+        }
+
+      } catch (error) {
         console.error('Prediction failed:', error);
-      } 
+      }
     };
   };
 
   useEffect(() => {
     if (imageSrc && model) {
-      predictWeather(); 
+      predictWeather();
     }
   }, [imageSrc, model]);
 
   return (
     <div>
-      {imageSrc && <img src={imageSrc} alt="" style={{ maxWidth: '500px' }} />}
+      {imageSrc && <img src={imageSrc} alt='' style={{ maxWidth: '500px' }} />}
     </div>
   );
 };

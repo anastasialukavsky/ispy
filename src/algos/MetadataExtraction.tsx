@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import * as exifr from 'exifr';
+import { useAuth } from '../context/AuthContext';
 
 const VITE_VISUAL_CROSSING_API_KEY = import.meta.env
   .VITE_VISUAL_CROSSING_API_KEY;
@@ -25,6 +26,16 @@ interface Props {
   tamperingProbability?: number | null;
   setSoftwareUsed?: React.Dispatch<React.SetStateAction<string | null>>;
   setProcessing: React.Dispatch<React.SetStateAction<boolean>>;
+  savedImageId?: number | null;
+  saveHistoricalWeather?: (
+    imageId: number,
+    historicalWeather: string
+  ) => Promise<void>;
+  saveGeolocation?: (
+    imageId: number,
+    latitude: number,
+    longitude: number
+  ) => Promise<void>;
 }
 
 const MetadataExtraction = ({
@@ -35,19 +46,23 @@ const MetadataExtraction = ({
   setHistoricalWeather,
   setGeolocation,
   setTamperingProbability,
-  setProcessing
+  setProcessing,
+  savedImageId,
+  saveHistoricalWeather,
+  saveGeolocation,
 }: Props) => {
+  const { isAuthenticated } = useAuth();
   const [weatherCache, setWeatherCache] = useState<{
     [key: string]: string | null;
   }>({});
   const [fetchError, setFetchError] = useState<boolean>(false);
-  const apiCallInProgress = useRef(false); 
+  const apiCallInProgress = useRef(false);
 
   const fetchHistoricalWeather = useCallback(
     async (lat: number, lon: number, date: string) => {
       const cacheKey = `${lat}-${lon}-${date}`;
       if (weatherCache[cacheKey]) {
-        return weatherCache[cacheKey]; // Return cached weather data
+        return weatherCache[cacheKey];
       }
 
       try {
@@ -76,6 +91,15 @@ const MetadataExtraction = ({
         }));
 
         setHistoricalWeather(weatherCondition);
+        if (
+          savedImageId &&
+          weatherCondition &&
+          saveHistoricalWeather &&
+          isAuthenticated
+        ) {
+          await saveHistoricalWeather(savedImageId, weatherCondition);
+        }
+
         return weatherCondition;
       } catch (error) {
         console.error('Error fetching historical weather:', error);
@@ -88,7 +112,7 @@ const MetadataExtraction = ({
 
   const extractMetadata = useCallback(async () => {
     if (!imageSrc || apiCallInProgress.current) return; // Prevent duplicate calls
-    apiCallInProgress.current = true; 
+    apiCallInProgress.current = true;
 
     try {
       // console.log('Fetching image metadata...');
@@ -122,6 +146,14 @@ const MetadataExtraction = ({
       const latitude = meta?.latitude || null;
       const longitude = meta?.longitude || null;
       const dateTime = meta?.DateTimeOriginal || meta?.CreateDate;
+
+        if (latitude && longitude) {
+          setGeolocation({ latitude, longitude });
+
+          if (savedImageId && saveGeolocation && isAuthenticated) {
+            await saveGeolocation(savedImageId, latitude, longitude);
+          }
+        }
 
       if (latitude && longitude && dateTime && !fetchError) {
         const date = new Date(dateTime).toISOString().split('T')[0];
