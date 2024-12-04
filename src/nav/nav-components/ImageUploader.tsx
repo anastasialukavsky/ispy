@@ -9,15 +9,23 @@ import DefaultResult from '../../algos/DefaultResult';
 import exifr from 'exifr';
 import Loader from '../../UI/Loader';
 import GeolocationDisplay from '../../algos/GeolocationDisplay';
-import { div } from '@tensorflow/tfjs';
+import { useAuth } from '../../context/AuthContext';
+import axios from 'axios';
+// import { div } from '@tensorflow/tfjs';
 
-interface Result {
+export interface Result {
+  imageId?: number;
   score: number;
   algo: string;
+  tamperingLikelihood?: number;
+  detectedEla?: boolean;
 }
 
 function ImageUploader() {
+  const { isAuthenticated, userId } = useAuth();
+
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedAlgo, setSelectedAlgo] = useState<string | null>(null);
   const [results, setResults] = useState<Result[]>([]);
   const [tamperingResult, setTamperingResult] = useState<string | null>(null);
@@ -41,64 +49,212 @@ function ImageUploader() {
     number | null
   >(null);
   const [softwareUsed, setSoftwareUsed] = useState<string | null>(null);
+  const [savedImageId, setSavedImageId] = useState<number | null>(null);
 
   // console.log({enableButton})
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     if (event?.target?.files) {
       const file = event.target.files[0];
       if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          setSelectedImage(e.target?.result as string);
-          setSelectedAlgo(null);
-          setResults([]);
-          setTamperingResult(null);
-          setWeatherPrediction(null);
-          setMetadata(null);
-          setMetadataReady(false);
-          setDisplayMetadata(false);
-          setEnableButton(true);
-          setImageUploaded(true);
-          setTamperingProbability(null);
-          setProcessing(false)
-        };
-        reader.readAsDataURL(file);
+        setSelectedFile(file);
+
+        try {
+          const meta = await extractMetadataForImage(file);
+          if (meta) {
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+              setSelectedImage(e.target?.result as string);
+              setSelectedAlgo(null);
+              setResults([]);
+              setTamperingResult(null);
+              setWeatherPrediction(null);
+              setDisplayMetadata(false);
+              setEnableButton(true);
+              setImageUploaded(true);
+              setTamperingProbability(null);
+              setProcessing(false);
+
+              if (isAuthenticated) {
+                await uploadToS3(file, meta);
+              }
+            };
+            reader.readAsDataURL(file);
+          } else {
+            console.error('Metadata extraction failed or not ready');
+            alert('Metadata extraction failed. Image upload aborted.');
+          }
+        } catch (error) {
+          console.error('Error extracting metadata:', error);
+          alert('Failed to extract metadata. Image upload aborted.');
+        }
       }
     }
   };
 
+  const uploadToS3 = async (file: File, metadata: any) => {
+    try {
+      const response = await axios.get(
+        'http://localhost:8080/generate-presigned-url',
+        {
+          params: {
+            fileName: file.name,
+          },
+        }
+      );
+
+      const presignedUrl = response.data;
+
+      await axios.put(presignedUrl, file, {
+        headers: {
+          'Content-Type': file.type,
+        },
+      });
+
+      alert('Image uploaded successfully to S3!');
+      if (isAuthenticated) {
+        await handleImageSave(file.name, metadata);
+      }
+    } catch (error) {
+      console.error('Error uploading to S3:', error);
+      alert('Failed to upload image to S3.');
+    }
+  };
+
+  const handleImageSave = async (filePath: string, metadata: any) => {
+    if (!isAuthenticated || !userId) return;
+
+    try {
+      const mutation = `
+      mutation SaveImage($input: ImageInput!) {
+        saveImage(input: $input) {
+          imageId
+          userId
+          filePath
+          uploadedAt
+        }
+      }
+    `;
+
+      const variables = {
+        input: {
+          userId,
+          filePath: `uploads/${filePath}`,
+        },
+      };
+
+      const response = await axios.post(
+        'http://localhost:8080/graphql',
+        {
+          query: mutation,
+          variables: variables,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (response.data.errors) {
+        console.error('GraphQL errors:', response.data.errors);
+        throw new Error('GraphQL request failed');
+      }
+
+      const savedImageId = response.data.data.saveImage.imageId;
+      console.log('Saved Image ID:', savedImageId);
+      setSavedImageId(savedImageId);
+      alert('Image details saved successfully!');
+
+      if (metadata) {
+        await handleMetadataSave(savedImageId, metadata);
+      }
+    } catch (error) {
+      console.error('Error saving image:', error);
+      alert('Failed to save image details.');
+    }
+  };
+
+  const handleMetadataSave = async (imageId: number, metadata: any) => {
+    try {
+      const mutation = `
+      mutation SaveMetadata($input: MetadataInput!) {
+        saveMetadata(input: $input) {
+          metadataId
+          imageId
+          metadata
+        }
+      }
+    `;
+
+      const variables = {
+        input: {
+          imageId,
+          metadata,
+        },
+      };
+
+      const response = await axios.post(
+        'http://localhost:8080/graphql',
+        {
+          query: mutation,
+          variables: variables,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (response.data.errors) {
+        console.error('GraphQL errors:', response.data.errors);
+        throw new Error('GraphQL request failed');
+      }
+
+      alert('Metadata saved successfully!');
+    } catch (error) {
+      console.error('Error saving metadata:', error);
+      alert('Failed to save metadata.');
+    }
+  };
+
   useEffect(() => {
+    if (!selectedFile) return;
     if (selectedImage) {
-      extractMetadataForImage();
+      extractMetadataForImage(selectedFile);
     }
   }, [selectedImage]);
 
-  const extractMetadataForImage = async () => {
-    if (!selectedImage) return;
-
+  const extractMetadataForImage = async (file: File) => {
     try {
-      // setProcessing(true)
-      const file = await fetch(selectedImage).then((res) => res.blob());
+      console.log('Extracting metadata for image...');
       const meta = await exifr.parse(file);
 
-      if (meta) setMetadata(meta);
-      else setMetadataReady(false);
+      if (meta) {
+        console.log('Metadata extracted successfully:', meta);
+        setMetadata(meta);
+        setMetadataReady(true);
 
-      // console.log({ meta });
-      if (meta?.latitude && meta?.longitude) {
-        setGeolocation({
-          latitude: meta.latitude,
-          longitude: meta.longitude,
-        });
+        if (meta.latitude && meta.longitude) {
+          setGeolocation({
+            latitude: meta.latitude,
+            longitude: meta.longitude,
+          });
+        }
+        return meta;
+      } else {
+        console.error('No metadata found.');
+        setMetadataReady(false);
+        return null;
       }
-
-      setMetadataReady(true);
-      setDisplayMetadata(false);
     } catch (error) {
+      console.error('Error extracting metadata:', error);
       setMetadataReady(false);
       setMetadata(null);
       setGeolocation(null);
-      console.log('Error extracting metadata:', error);
+      return null;
     }
   };
 
@@ -111,9 +267,177 @@ function ImageUploader() {
       } else {
         newResults.push(result);
       }
+      if (isAuthenticated && savedImageId) {
+        if (result.algo === 'Noise Analysis') {
+          saveNoiseAnalysisResult(
+            savedImageId,
+            result.score,
+            result.score > 0.5
+          );
+        }
+         if (
+           result.algo === 'ELA' &&
+           result.tamperingLikelihood !== undefined
+         ) {
+           console.log('Saving ELA result with:', {
+             savedImageId,
+             tamperingLikelihood: result.tamperingLikelihood,
+             detectedEla: result.detectedEla ?? false,
+           });
+           saveElaResult(
+             savedImageId,
+             result.tamperingLikelihood,
+             result.detectedEla ?? false
+           );
+         }
+      }
       return newResults;
     });
   };
+
+  const saveHistoricalWeather = async (
+    imageId: number,
+    historicalWeather: string
+  ) => {
+    try {
+      const mutation = `
+      mutation SaveHistoricalWeather($input: HistoricalWeatherInput!) {
+        saveHistoricalWeather(input: $input) {
+          id
+          imageId
+          historicalWeather
+        }
+      }
+    `;
+
+      const variables = {
+        input: {
+          imageId,
+          historicalWeather,
+        },
+      };
+
+      const response = await axios.post(
+        'http://localhost:8080/graphql',
+        {
+          query: mutation,
+          variables: variables,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (response.data.errors) {
+        console.error('GraphQL errors:', response.data.errors);
+        throw new Error('GraphQL request failed');
+      }
+
+      alert('Historical weather saved successfully!');
+    } catch (error) {
+      console.error('Error saving historical weather:', error);
+      alert('Failed to save historical weather.');
+    }
+  };
+
+  const saveDeepLearningWeatherResult = async (
+    imageId: number,
+    deepLearningWeather: string
+  ) => {
+    try {
+      const mutation = `
+    mutation SaveDeepLearningWeather($input: DeepLearningWeatherInput!) {
+      saveDeepLearningWeather(input: $input) {
+        id
+        imageId
+        deepLearningWeather
+      }
+    }`;
+
+      const variables = {
+        input: {
+          imageId,
+          deepLearningWeather,
+        },
+      };
+
+      const response = await axios.post(
+        'http://localhost:8080/graphql',
+        {
+          query: mutation,
+          variables: variables,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (response.data.errors) {
+        console.error('GraphQL errors:', response.data.errors);
+        throw new Error('GraphQL request failed');
+      }
+
+      alert('Deep learning weather analysis results saved successfully!');
+    } catch (error) {
+      console.error('Error saving deep learning weather results:', error);
+      alert('Failed to save deep learning weather results.');
+    }
+  };
+
+  const saveGeolocation = async (
+    imageId: number,
+    latitude: number,
+    longitude: number
+  ) => {
+    try {
+      const mutation = `
+      mutation SaveGeolocation($input: GeolocationInput!) {
+        saveGeolocation(input: $input) {
+          id
+          imageId
+          latitude
+          longitude
+        }
+      }
+    `;
+
+      const variables = {
+        input: {
+          imageId,
+          latitude,
+          longitude,
+        },
+      };
+
+      const response = await axios.post(
+        'http://localhost:8080/graphql',
+        {
+          query: mutation,
+          variables: variables,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (response.data.errors) {
+        console.error('GraphQL errors:', response.data.errors);
+        throw new Error('GraphQL request failed');
+      }
+
+      alert('Geolocation data saved successfully!');
+    } catch (error) {
+      console.error('Error saving geolocation data:', error);
+      alert('Failed to save geolocation data.');
+    }
+  };
+
 
   const calculateOverallProbability = () => {
     if (results.length === 0) return null;
@@ -121,9 +445,110 @@ function ImageUploader() {
     return totalScore / results.length;
   };
 
+  const saveNoiseAnalysisResult = async (
+    imageId: number,
+    score: number,
+    detectedNoise: boolean
+  ) => {
+    try {
+      const mutation = `
+    mutation SaveNoiseAnalysis($input: NoiseAnalysisInput!) {
+      saveNoiseAnalysis(input: $input) {
+        id
+        imageId
+        tamperingLikelihood
+        detectedNoise
+      }
+    }`;
+
+      const variables = {
+        input: {
+          imageId,
+          tamperingLikelihood: score,
+          detectedNoise,
+        },
+      };
+
+      const response = await axios.post(
+        'http://localhost:8080/graphql',
+        {
+          query: mutation,
+          variables: variables,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (response.data.errors) {
+        console.error('GraphQL errors:', response.data.errors);
+        throw new Error('GraphQL request failed');
+      }
+
+      alert('Noise analysis results saved successfully!');
+    } catch (error) {
+      console.error('Error saving noise analysis results:', error);
+      alert('Failed to save noise analysis results.');
+    }
+  };
+
+  const saveElaResult = async (
+    imageId: number,
+    tamperingLikelihood: number,
+    detectedEla: boolean
+  ) => {
+    try {
+      const mutation = `
+    mutation SaveEla($input: ElaInput!) {
+      saveEla(input: $input) {
+        id
+        imageId
+        tamperingLikelihood
+        detectedEla
+      }
+    }`;
+
+      const variables = {
+        input: {
+          imageId,
+          tamperingLikelihood,
+          detectedEla,
+        },
+      };
+
+         console.log('Sending SaveEla mutation with variables:', variables);
+
+      const response = await axios.post(
+        'http://localhost:8080/graphql',
+        {
+          query: mutation,
+          variables: variables,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (response.data.errors) {
+        console.error('GraphQL errors:', response.data.errors);
+        throw new Error('GraphQL request failed');
+      }
+
+      alert('Ela analysis results saved successfully!');
+    } catch (error) {
+      console.error('Error saving ela  results:', error);
+      alert('Failed to save ela results.');
+    }
+  };
+
   // console.log({ softwareUsed });
-  console.log({processing})
+  console.log({ processing });
   const renderSelectedAlgo = () => {
+    console.log('Selected Algorithm:', selectedAlgo);
     switch (selectedAlgo) {
       case 'ELA':
         return (
@@ -164,6 +589,9 @@ function ImageUploader() {
             tamperingProbability={tamperingProbability}
             setSoftwareUsed={setSoftwareUsed}
             setProcessing={setProcessing}
+            savedImageId={savedImageId}
+            saveHistoricalWeather={saveHistoricalWeather}
+            saveGeolocation={saveGeolocation}
           />
         );
       case 'Geolocation':
@@ -178,6 +606,8 @@ function ImageUploader() {
             imageSrc={selectedImage}
             setWeatherPrediction={setWeatherPrediction}
             setProcessing={setProcessing}
+            savedImageId={savedImageId} 
+            saveDeepLearningWeatherResult={saveDeepLearningWeatherResult}
           />
         ) : (
           <p>Extracting metadata... Please wait.</p>
@@ -187,7 +617,7 @@ function ImageUploader() {
     }
   };
 
-  console.log({weatherPrediction})
+  console.log({ weatherPrediction });
   // console.log({ tamperingProbability });
   // console.log({ selectedAlgo });
   const overallProbability = calculateOverallProbability();
