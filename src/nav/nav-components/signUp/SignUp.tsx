@@ -6,10 +6,9 @@ import {
   CredentialResponse,
 } from '@react-oauth/google';
 import { NavLink, useNavigate } from 'react-router-dom';
-import Form from '../signIn/Form';
+import Form, { SignInFormData } from '../signIn/Form';
 import { Button } from '../../../UI';
 import Separator from '../signIn/Separator';
-import jwtDecode from 'jwt-decode';
 import { useAuth } from '../../../context/AuthContext';
 
 interface GoogleCredentialResponse {
@@ -19,21 +18,14 @@ interface GoogleCredentialResponse {
 }
 
 export default function SignUp() {
+  const [rememberMe, setRememberMe] = useState(false);
   const { login } = useAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [role, setRole] = useState('USER');
   const navigate = useNavigate();
   let errors: string | any[] = [];
 
   const handleGoogleSignUp = async (credentialResponse: CredentialResponse) => {
     try {
-    //  const decoded: any = jwtDecode(credentialResponse.credential);
 
-       // Check if email is present
-      //  if (!decoded.email) {
-      //    throw new Error('Failed to extract email from Google credential.');
-      //  }
       const mutation = `
         mutation SignUp($input: AuthSignUpInput!) {
           signUp(input: $input) {
@@ -76,8 +68,7 @@ export default function SignUp() {
     }
   };
 
-  const handleSignUp = async (event: { preventDefault: () => void }) => {
-    event.preventDefault();
+  const handleSignUp = async (data: SignInFormData) => {
     const mutation = `
     mutation SignUp($input: AuthSignUpInput!) {
       signUp(input: $input) {
@@ -95,32 +86,30 @@ export default function SignUp() {
 
     const variables = {
       input: {
-        email,
-        passwordHash: password,
-        role,
+        email: data.email,
+        passwordHash: data.password,
+        role: 'USER',
       },
     };
 
     try {
       const response = await API.post('', { query: mutation, variables });
-      if (response.status !== 200) {
-        console.error('HTTP Status:', response.status);
-        throw new Error(
-          'GraphQL request failed with status code: ' + response.status
-        );
-      }
-      const data = response.data;
+      const result = response.data;
 
-      if (data.errors) {
-        console.error('GraphQL errors:', data.errors);
-        errors = data.errors;
+      if (!result || result.errors) {
+        console.error('GraphQL errors:', result.errors);
         throw new Error('GraphQL request failed');
       }
 
-      const { accessToken } = data.data.signUp;
-      localStorage.setItem('token', accessToken);
-       login();
-      // alert('Sign-up successful!');
+      const { accessToken } = result.data.signUp;
+      // Store the token based on the 'rememberMe' flag
+      if (rememberMe) {
+        localStorage.setItem('token', accessToken);
+      } else {
+        sessionStorage.setItem('token', accessToken);
+      }
+
+      login();
       navigate('/');
     } catch (error: any) {
       console.error('Sign-up failed:', error.message);
@@ -128,23 +117,19 @@ export default function SignUp() {
     }
   };
 
+
   return (
     <div className='w-full min-h-[calc(100vh_-_64px)] bg-primary-dark-gray text-primary-light-fill font-abel flex flex-col gap-3 items-center pt-20'>
       <h1 className='text-3xl text-primary-light-fill'>Sign Up</h1>
       <Form
-        email={email}
-        password={password}
-        setPassword={setPassword}
-        setEmail={setEmail}
-        handleSubmit={handleSignUp}
+        handleFormSubmit={handleSignUp}
         mode='signUp'
+        rememberMe={rememberMe}
+        setRememberMe={setRememberMe}
       />
       <p>
         Have an accound already?{' '}
-        <NavLink
-          to='/auth/signin'
-          className='cursor-pointer underline-offset-1 text-primary-light-fill'
-        >
+        <NavLink to='/auth/signin' className='animated-link'>
           sign in
         </NavLink>{' '}
         instead

@@ -5,9 +5,8 @@ import {
   GoogleLogin,
   CredentialResponse,
 } from '@react-oauth/google';
-import { NavLink, redirect, useNavigate } from 'react-router-dom';
-import Form from './Form';
-import TestForm from './TestForm';
+import { NavLink, useNavigate } from 'react-router-dom';
+import Form, { SignInFormData } from './Form';
 import Separator from './Separator';
 import { useAuth } from '../../../context/AuthContext';
 
@@ -18,11 +17,11 @@ interface GoogleCredentialResponse {
 }
 
 export default function SignIn() {
+  const [rememberMe, setRememberMe] = useState(false);
   const { login } = useAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+
   const navigate = useNavigate();
-  let errors: string | any[] = [];
+  let errorsArr: string | any[] = [];
 
   const handleGoogleSignIn = async (credentialResponse: CredentialResponse) => {
     try {
@@ -51,13 +50,13 @@ export default function SignIn() {
 
       if (data.errors) {
         console.error('GraphQL errors:', data.errors);
-        errors = data.errors;
+        errorsArr = data.errors;
         throw new Error('GraphQL request failed');
       }
 
       const { accessToken } = data.data.signIn;
       localStorage.setItem('token', accessToken);
-       login();
+      login();
       // alert('Sign-in successful!');
       navigate('/');
     } catch (error: any) {
@@ -66,8 +65,7 @@ export default function SignIn() {
     }
   };
 
-  const handleSignIn = async (event: { preventDefault: () => void }) => {
-    event.preventDefault();
+  const handleSignIn = async (data: SignInFormData) => {
     const mutation = `
       mutation SignIn($input: AuthSignInInput!) {
         signIn(input: $input) {
@@ -85,25 +83,30 @@ export default function SignIn() {
 
     const variables = {
       input: {
-        email,
-        passwordHash: password,
+        email: data.email,
+        passwordHash: data.password,
       },
     };
 
     try {
-      const { data } = await API.post('', { query: mutation, variables });
+      const { data: response } = await API.post('', {
+        query: mutation,
+        variables,
+      });
 
-      if (data.errors) {
-        console.error('GraphQL errors:', data.errors);
+      if (response.errors) {
+        console.error('GraphQL errors:', response.errors);
         throw new Error('GraphQL request failed');
       }
 
-      const { accessToken } = data.data.signIn;
-      console.log('Access token:', accessToken);
+      const { accessToken } = response.data.signIn;
 
-      localStorage.setItem('token', accessToken);
-       login();
-      // alert('Sign-in successful!');
+     if (rememberMe) {
+       localStorage.setItem('token', accessToken);
+     } else {
+       sessionStorage.setItem('token', accessToken);
+     }
+      login();
       navigate('/');
     } catch (error: any) {
       console.error('Sign-in failed:', error.message);
@@ -115,25 +118,20 @@ export default function SignIn() {
     <div className='w-full min-h-[calc(100vh_-_64px)] bg-primary-dark-gray text-primary-light-fill font-abel flex flex-col gap-3 items-center pt-20'>
       <h1 className='text-3xl text-primary-light-fill'>Sign In</h1>
       <Form
-        email={email}
-        password={password}
-        setPassword={setPassword}
-        setEmail={setEmail}
-        handleSubmit={handleSignIn}
+        rememberMe={rememberMe}
+        setRememberMe={setRememberMe}
+        handleFormSubmit={handleSignIn}
         mode='signIn'
       />
 
       <p className=''>
         don't have an account?{' '}
-        <NavLink
-          to='/auth/signup'
-          className='cursor-pointer underline-offset-1 text-primary-light-fill'
-        >
+        <NavLink to='/auth/signup' className='animated-link'>
           sign up
         </NavLink>{' '}
         instead
       </p>
-      <Separator/>
+      <Separator />
       <GoogleOAuthProvider clientId='778743708511-482k2i9mrc6oq5fgs5824p50f5jfod93.apps.googleusercontent.com'>
         <GoogleLogin
           onSuccess={handleGoogleSignIn}
