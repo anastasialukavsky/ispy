@@ -1,0 +1,37 @@
+query GetUserImagesWithResults($userId: UUID!) {
+  getUserImagesWithResults(userId: $userId) {
+    image {
+      imageId
+      userId
+      filePath
+      uploadedAt
+    }
+    elaResults {
+      id
+      tamperingLikelihood
+      detectedEla
+    }
+    noiseAnalysisResults {
+      id
+      tamperingLikelihood
+      detectedNoise
+    }
+    metadata {
+      metadataId
+      metadata
+    }
+    historicalWeather {
+      id
+      historicalWeather
+    }
+    deepLearningWeather {
+      id
+      deepLearningWeather
+    }
+    geolocation {
+      id
+      latitude
+      longitude
+    }
+  }
+}

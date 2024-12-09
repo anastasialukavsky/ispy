@@ -3,7 +3,7 @@ import { ReactNode, useState } from 'react';
 type ButtonProps = {
   children: ReactNode;
   type?:string;
-  onClick:
+  onClick?:
     | (() => void)
     | ((event: { preventDefault: () => void }) => Promise<void>) | undefined;
   className?: string;

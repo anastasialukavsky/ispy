@@ -10,6 +10,7 @@ import './global.css';
 import Lenis from 'lenis';
 import SignUp from './nav/nav-components/signUp/SignUp';
 import SignIn from './nav/nav-components/signIn/SignIn';
+// import { UserImagesProvider } from './context/UserImagesContext';
 
 function App() {
   const lenis = new Lenis();
@@ -22,19 +23,20 @@ function App() {
   requestAnimationFrame(raf);
   return (
     <OpenCvProvider>
-      <Router>
-        <Navbar />
-        <Routes>
-          <Route path='/' element={<Landing />} />
-          <Route path='/about' element={<About />} />
-          <Route path='/about/*' element={<About />} />
-          <Route path='/account' element={<Account />} />
-          <Route path='/upload' element={<ImageUploader />} />
-          <Route path='/auth/signup' element={<SignUp />} />
-          <Route path='/auth/signin' element={<SignIn />} />
-
-        </Routes>
-      </Router>
+      {/* <UserImagesProvider> */}
+        <Router>
+          <Navbar />
+          <Routes>
+            <Route path='/' element={<Landing />} />
+            <Route path='/about' element={<About />} />
+            <Route path='/about/*' element={<About />} />
+            <Route path='/account' element={<Account />} />
+            <Route path='/upload' element={<ImageUploader />} />
+            <Route path='/auth/signup' element={<SignUp />} />
+            <Route path='/auth/signin' element={<SignIn />} />
+          </Routes>
+        </Router>
+      {/* </UserImagesProvider> */}
     </OpenCvProvider>
   );
 }
