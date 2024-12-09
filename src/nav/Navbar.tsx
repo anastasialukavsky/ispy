@@ -86,11 +86,6 @@ export default function Navbar() {
             </NavLink>
           </li>
         )}
-        {/* <li>
-          <NavLink to='/auth/signup' className={getNavlinkColor()}>
-            sign up
-          </NavLink>
-        </li> */}
       </ul>
 
       {/* Bottom Border */}
