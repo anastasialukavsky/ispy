@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import { jwtDecode } from 'jwt-decode';
 
+
 interface AuthContextType {
   isAuthenticated: boolean;
   userId: string | null;
@@ -21,12 +22,16 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  const getToken = () => {
+    return localStorage.getItem('token') || sessionStorage.getItem('token');
+  };
+
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
-    return localStorage.getItem('token') ? true : false;
+    return !!getToken();
   });
 
   const [userId, setUserId] = useState<string | null>(() => {
-    const token = localStorage.getItem('token');
+    const token = getToken();
     if (token) {
       try {
         const decodedToken: any = jwtDecode(token);
@@ -41,7 +46,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = () => {
     setIsAuthenticated(true);
-    const token = localStorage.getItem('token');
+    const token = getToken();
     if (token) {
       try {
         const decodedToken: any = jwtDecode(token);
@@ -54,21 +59,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const logout = () => {
     localStorage.removeItem('token');
+    sessionStorage.removeItem('token');
     setIsAuthenticated(false);
     setUserId(null);
   };
 
   useEffect(() => {
-    if (localStorage.getItem('token')) {
+    const token = getToken();
+    if (token) {
       setIsAuthenticated(true);
-      const token = localStorage.getItem('token');
-      if (token) {
-        try {
-          const decodedToken: any = jwtDecode(token);
-          setUserId(decodedToken.userId);
-        } catch (error) {
-          console.error('Failed to decode token:', error);
-        }
+      try {
+        const decodedToken: any = jwtDecode(token);
+        setUserId(decodedToken.userId);
+      } catch (error) {
+        console.error('Failed to decode token:', error);
       }
     }
   }, []);

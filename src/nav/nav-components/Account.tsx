@@ -1,17 +1,136 @@
-import React from 'react'
+import  { useEffect, useState } from 'react';
 import { Button } from '../../UI';
 import { useAuth } from '../../context/AuthContext';
+import axios from 'axios';
+import {
+  // @ts-ignore
+  DeepLearningWeather,
+  getUserImagesWithResults,
+  // @ts-ignore
+  HistoricalWeather,
+  // @ts-ignore
+  ImageGeolocation,
+  ImageWithResults,
+  // @ts-ignore
+  Metadata,
+} from '../../graphql/service/imageService';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
 
 export default function Account() {
-  const { logout } = useAuth();
+  const [hasFetched, setHasFetched] = useState(false);
+  const [presignedUrls, setPresignedUrls] = useState<Record<string, string>>(
+    {}
+  );
+  // @ts-ignore
+  const [selectedImage, setSelectedImage] = useState<ImageWithResults | null>(
+    null
+  );
+  // @ts-ignore
+  const [selectedUrl, setSelectedUrl] = useState<string | null>(null);
+  const { logout, userId } = useAuth();
+  const [imagesWithResults, setImagesWithResults] = useState<
+    ImageWithResults[]
+  >([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const fetchImagesWithResults = async (userId: string) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const data = await getUserImagesWithResults(userId);
+      setImagesWithResults(data);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchPresignedGetUrl = async (filePath: string): Promise<string> => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/generate-presigned-get-url?fileName=${encodeURIComponent(
+          filePath
+        )}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching presigned GET URL:', error);
+      return '/placeholder-image.png';
+    }
+  };
+
+  useEffect(() => {
+    const fetchAllGetUrls = async () => {
+      const urls: Record<string, string> = {};
+      for (const { image } of imagesWithResults) {
+        const url = await fetchPresignedGetUrl(image.filePath);
+        urls[image.imageId] = url;
+      }
+      setPresignedUrls(urls);
+    };
+
+    if (imagesWithResults.length > 0) {
+      fetchAllGetUrls();
+    }
+  }, [imagesWithResults]);
+
+  useEffect(() => {
+    if (userId && imagesWithResults.length === 0 && !hasFetched) {
+      fetchImagesWithResults(userId).then(() => setHasFetched(true));
+    }
+  }, [userId, hasFetched, imagesWithResults]);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
 
   return (
-    <section className='w-full min-h-[calc(100vh_-_64px)] bg-primary-dark-gray text-primary-light-fill font-abel'>
-      <div className='flex flex-col justify-center items-center h-full w-full pt-20'>
-        <Button onClick={() => logout()}>logout</Button>
-        <img src='public/assets/login.gif' alt='' className='w-[400px]'/>
-        <h1 className='text-2xl text-primary-light-fill pt-5'>coming soon...</h1>
-      </div>
-    </section>
+    <div className='h-[100vh]'>
+      <Button
+        className='logout-button'
+        onClick={() => {
+          logout();
+          toast.success('Logged out successfully!', { autoClose: 3000 });
+          navigate('/');
+        }}
+      >
+        logout
+      </Button>
+      <section className='account-section '>
+        <div className='flex flex-col'>
+          <h1 className='text-primary-light-fill text-3xl text-center pb-10'>
+            Recently uploaded
+          </h1>
+          <div className='account-container'>
+            <div className='image-grid'>
+              {imagesWithResults.map((imageData) => (
+                <div key={imageData.image.imageId} className='image-wrapper'>
+                  <img
+                    src={
+                      presignedUrls[imageData.image.imageId] ||
+                      '/placeholder-image.png'
+                    }
+                    className='image-grid-item'
+                    alt='Uploaded'
+                    onClick={() =>
+                      navigate(`/image/${imageData.image.imageId}`, {
+                        state: {
+                          image: imageData,
+                          presignedUrl: presignedUrls[imageData.image.imageId],
+                        },
+                      })
+                    }
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }

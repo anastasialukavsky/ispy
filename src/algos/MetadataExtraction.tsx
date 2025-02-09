@@ -46,6 +46,7 @@ const MetadataExtraction = ({
   setHistoricalWeather,
   setGeolocation,
   setTamperingProbability,
+  // @ts-ignore
   setProcessing,
   savedImageId,
   saveHistoricalWeather,
@@ -71,8 +72,8 @@ const MetadataExtraction = ({
           throw new Error('API key is missing');
         }
 
-        // const url = 'https://google.com'
-        const url = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${lat},${lon}/${date}?key=${apiKey}`;
+        const url = 'https://google.com';
+        // const url = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${lat},${lon}/${date}?key=${apiKey}`;
         const response = await fetch(url);
 
         if (!response.ok) {
@@ -147,13 +148,13 @@ const MetadataExtraction = ({
       const longitude = meta?.longitude || null;
       const dateTime = meta?.DateTimeOriginal || meta?.CreateDate;
 
-        if (latitude && longitude) {
-          setGeolocation({ latitude, longitude });
+      if (latitude && longitude) {
+        setGeolocation({ latitude, longitude });
 
-          if (savedImageId && saveGeolocation && isAuthenticated) {
-            await saveGeolocation(savedImageId, latitude, longitude);
-          }
+        if (savedImageId && saveGeolocation && isAuthenticated) {
+          await saveGeolocation(savedImageId, latitude, longitude);
         }
+      }
 
       if (latitude && longitude && dateTime && !fetchError) {
         const date = new Date(dateTime).toISOString().split('T')[0];

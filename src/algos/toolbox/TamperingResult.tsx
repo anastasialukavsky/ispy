@@ -1,4 +1,3 @@
-import React from 'react'
 
 type TamperingResultProps = {
   tamperingResult: string;
