@@ -1,4 +1,3 @@
-import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 export const Logo = () => {
@@ -8,9 +7,9 @@ export const Logo = () => {
   const getLogoColor = () => {
     switch (location.pathname) {
       case '/':
-        return 'public/assets/logo2.png';
+        return '/assets/logo2.png';
       default:
-        return 'public/assets/logo01.png';
+        return '/assets/logo01.png';
     }
   };
 

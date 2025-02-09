@@ -1,5 +1,5 @@
 import AboutContentShelf from './AboutContentShelf';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import ELADetails from './ELADetails';
 import DefaultArticle from './DefaultArticle';

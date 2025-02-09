@@ -23,6 +23,7 @@ interface ELAComponentProps {
 export default function ELAComponent({
   imageSrc,
   onResult,
+  // @ts-ignore
   tamperingResult,
   setTamperingResult,
   processing,

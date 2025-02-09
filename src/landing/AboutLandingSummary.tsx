@@ -17,7 +17,7 @@ export default function AboutLandingSummary() {
         <div className='flex pt-16 text-white border border-blue-600 w-full 5xl:w-[70%] justify-between px-64 items-start gap-14'>
           <div className='w-full h-full pr-10 border border-red-400'>
             <img
-              src='public/assets/bg.jpg'
+              src='/assets/bg.jpg'
               alt=''
               className='w-[40vh] object-cover'
             />
@@ -40,7 +40,7 @@ export default function AboutLandingSummary() {
         </div>
         <div className='flex pt-16 text-white border border-blue-600 w-full 5xl:w-[70%] justify-between px-64 items-start gap-14 flex-row-reverse'>
           <div className='h-full pr-10 border border-red-400'>
-            <img src='public/assets/bg1.jpg' alt='' className='w-full' />
+            <img src='/assets/bg1.jpg' alt='' className='w-full' />
           </div>
           <div className=' flex flex-col  '>
             <h3 className='text-primary-light-fill text-3xl pt-[10%] pb-5'>

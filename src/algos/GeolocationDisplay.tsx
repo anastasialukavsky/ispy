@@ -1,4 +1,3 @@
-import React from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 
 interface GeolocationProps {
@@ -8,7 +7,7 @@ interface GeolocationProps {
 } | null
   metadata: any;
 }
-
+// @ts-ignore
 const GeolocationDisplay = ({ geolocation, metadata }: GeolocationProps) => {
   if (!geolocation) {
     return <p className='text-white text-6xl'>No geolocation data available.</p>;

@@ -52,8 +52,8 @@ export default function NoiseAnalysisComponent({
     },
     []
   );
-
   const detectNoiseAndEdges = useCallback(
+    // @ts-ignore
     (srcMat: cv.Mat, width: number, height: number) => {
       try {
         // console.log('Starting image processing...');

@@ -7,10 +7,11 @@ import {
 } from '@react-oauth/google';
 import { NavLink, useNavigate } from 'react-router-dom';
 import Form, { SignInFormData } from '../signIn/Form';
-import { Button } from '../../../UI';
 import Separator from '../signIn/Separator';
 import { useAuth } from '../../../context/AuthContext';
-
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+// @ts-ignore
 interface GoogleCredentialResponse {
   clientId: string;
   credential: string;
@@ -21,11 +22,11 @@ export default function SignUp() {
   const [rememberMe, setRememberMe] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+  // @ts-ignore
   let errors: string | any[] = [];
 
   const handleGoogleSignUp = async (credentialResponse: CredentialResponse) => {
     try {
-
       const mutation = `
         mutation SignUp($input: AuthSignUpInput!) {
           signUp(input: $input) {
@@ -59,12 +60,15 @@ export default function SignUp() {
 
       const { accessToken } = data.data.signUp;
       localStorage.setItem('token', accessToken);
-       login();
+      login();
+      toast.success('Sign-in successful!');
+
       // alert('Sign-up successful!');
       navigate('/');
     } catch (error: any) {
       console.error('Google sign-in failed:', error.message);
       alert('Google sign-in failed.');
+      toast.error('Google sign-in failed.');
     }
   };
 
@@ -110,13 +114,14 @@ export default function SignUp() {
       }
 
       login();
+      toast.success('Sign-in successful!');
       navigate('/');
     } catch (error: any) {
       console.error('Sign-up failed:', error.message);
       alert('Sign-up failed. Please try again.');
+      toast.error('Google sign-in failed.');
     }
   };
-
 
   return (
     <div className='w-full min-h-[calc(100vh_-_64px)] bg-primary-dark-gray text-primary-light-fill font-abel flex flex-col gap-3 items-center pt-20'>

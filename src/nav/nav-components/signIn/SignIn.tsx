@@ -9,7 +9,9 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import Form, { SignInFormData } from './Form';
 import Separator from './Separator';
 import { useAuth } from '../../../context/AuthContext';
-
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+// @ts-ignore
 interface GoogleCredentialResponse {
   clientId: string;
   credential: string;
@@ -21,6 +23,7 @@ export default function SignIn() {
   const { login } = useAuth();
 
   const navigate = useNavigate();
+  // @ts-ignore
   let errorsArr: string | any[] = [];
 
   const handleGoogleSignIn = async (credentialResponse: CredentialResponse) => {
@@ -57,11 +60,13 @@ export default function SignIn() {
       const { accessToken } = data.data.signIn;
       localStorage.setItem('token', accessToken);
       login();
+      toast.success('Sign-in successful!');
       // alert('Sign-in successful!');
       navigate('/');
     } catch (error: any) {
       console.error('Google sign-in failed:', error.message);
-      alert('Google sign-in failed.');
+      // alert('Google sign-in failed.');
+      toast.error('Google sign-in failed.');
     }
   };
 
@@ -101,16 +106,18 @@ export default function SignIn() {
 
       const { accessToken } = response.data.signIn;
 
-     if (rememberMe) {
-       localStorage.setItem('token', accessToken);
-     } else {
-       sessionStorage.setItem('token', accessToken);
-     }
+      if (rememberMe) {
+        localStorage.setItem('token', accessToken);
+      } else {
+        sessionStorage.setItem('token', accessToken);
+      }
       login();
+      toast.success('Sign-in successful!');
       navigate('/');
     } catch (error: any) {
       console.error('Sign-in failed:', error.message);
-      alert('Sign-in failed. Please try again.');
+      // alert('Sign-in failed. Please try again.');
+      toast.error('Sign-in failed. Invalid credentials');
     }
   };
 

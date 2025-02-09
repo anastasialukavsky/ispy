@@ -67,7 +67,7 @@ export default function Form({
           className={`w-full px-3 py-2 text-sm mb-4 outline-none ${
             errors.email
               ? 'input-error placeholder-error'
-              : 'border border-slate-300'
+              : 'border-form border-slate-300'
           }`}
           {...register('email', {
             required: 'Email is required',
@@ -93,7 +93,9 @@ export default function Form({
             placeholder={
               errors.password ? errors.password.message : 'Enter your password'
             }
-            className='w-full py-2 text-sm outline-none'
+            className={`w-full py-2 text-sm outline-none ${
+              errors.password ? 'placeholder-error' : ''
+            }`}
             {...register('password', {
               required: 'Password is required',
               minLength: {

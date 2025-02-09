@@ -12,6 +12,7 @@ interface WeatherPredictionProps {
 export default function WeatherPrediction({
   imageSrc,
   setWeatherPrediction,
+  // @ts-ignore
   setProcessing,
   savedImageId,
   saveDeepLearningWeatherResult,
@@ -56,7 +57,6 @@ export default function WeatherPrediction({
         if (savedImageId && saveDeepLearningWeatherResult) {
           await saveDeepLearningWeatherResult(savedImageId, predictedWeather);
         }
-
       } catch (error) {
         console.error('Prediction failed:', error);
       }

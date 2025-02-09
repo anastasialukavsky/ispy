@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const useOpenCvReady = () => {
   const [cvReady, setCvReady] = useState(false);

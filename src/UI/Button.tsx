@@ -16,7 +16,6 @@ type ButtonProps = {
 
 export const Button = ({
   onClick,
-  type,
   className,
   children,
   colorVariant,

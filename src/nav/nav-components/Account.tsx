@@ -1,28 +1,41 @@
-import React, { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import { Button } from '../../UI';
 import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
 import {
+  // @ts-ignore
   DeepLearningWeather,
   getUserImagesWithResults,
+  // @ts-ignore
   HistoricalWeather,
+  // @ts-ignore
   ImageGeolocation,
   ImageWithResults,
+  // @ts-ignore
   Metadata,
 } from '../../graphql/service/imageService';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
 
 export default function Account() {
   const [hasFetched, setHasFetched] = useState(false);
   const [presignedUrls, setPresignedUrls] = useState<Record<string, string>>(
     {}
   );
+  // @ts-ignore
+  const [selectedImage, setSelectedImage] = useState<ImageWithResults | null>(
+    null
+  );
+  // @ts-ignore
+  const [selectedUrl, setSelectedUrl] = useState<string | null>(null);
   const { logout, userId } = useAuth();
   const [imagesWithResults, setImagesWithResults] = useState<
     ImageWithResults[]
   >([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-
+  const navigate = useNavigate();
   const fetchImagesWithResults = async (userId: string) => {
     setLoading(true);
     setError(null);
@@ -37,32 +50,32 @@ export default function Account() {
     }
   };
 
-  const fetchPresignedUrl = async (filePath: string): Promise<string> => {
+  const fetchPresignedGetUrl = async (filePath: string): Promise<string> => {
     try {
       const response = await axios.get(
-        `/generate-presigned-url?fileName=${encodeURIComponent(filePath)}`
+        `http://localhost:8080/generate-presigned-get-url?fileName=${encodeURIComponent(
+          filePath
+        )}`
       );
-      return response.data; // Expecting a valid HTTPS presigned URL
+      return response.data;
     } catch (error) {
-      console.error('Error fetching presigned URL:', error);
-      return '/placeholder-image.png'; // Fallback for errors
+      console.error('Error fetching presigned GET URL:', error);
+      return '/placeholder-image.png';
     }
   };
 
   useEffect(() => {
-    const fetchAllPresignedUrls = async () => {
+    const fetchAllGetUrls = async () => {
       const urls: Record<string, string> = {};
-
       for (const { image } of imagesWithResults) {
-        const url = await fetchPresignedUrl(image.filePath);
-        urls[image.imageId] = url; // Map the URL to imageId
+        const url = await fetchPresignedGetUrl(image.filePath);
+        urls[image.imageId] = url;
       }
-
       setPresignedUrls(urls);
     };
 
     if (imagesWithResults.length > 0) {
-      fetchAllPresignedUrls();
+      fetchAllGetUrls();
     }
   }, [imagesWithResults]);
 
@@ -76,112 +89,48 @@ export default function Account() {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <section className='w-full min-h-[calc(100vh_-_64px)] bg-primary-dark-gray text-primary-light-fill font-abel'>
-      <div className='flex flex-col justify-center items-center h-full w-full pt-20'>
-        <Button onClick={() => logout()}>Logout</Button>
-        <div className='w-full max-w-4xl px-4 py-6'>
-          {imagesWithResults.map(
-            ({
-              image,
-              elaResults,
-              noiseAnalysisResults,
-              metadata,
-              historicalWeather,
-              deepLearningWeather,
-              geolocation,
-            }: ImageWithResults) => (
-              <div key={image.imageId} className='mb-6'>
-                <h2 className='text-lg font-bold'>Image:</h2>
-                <img
-                  src={'public/assets/200w.gif'}
-                  className='w-[300px] max-w-md mb-4 rounded'
-                  alt='Uploaded'
-                />
-
-                <p>
-                  Uploaded At: {new Date(image.uploadedAt).toLocaleString()}
-                </p>
-
-                {elaResults?.length > 0 ? (
-                  <div>
-                    <h3 className='text-md font-semibold'>ELA Results:</h3>
-                    {elaResults.map((result) => (
-                      <p key={result.id}>
-                        Tampering Likelihood: {result.tamperingLikelihood},
-                        Detected: {result.detectedEla ? 'Yes' : 'No'}
-                      </p>
-                    ))}
-                  </div>
-                ) : (
-                  <p>No ELA results available.</p>
-                )}
-
-                {noiseAnalysisResults?.length > 0 ? (
-                  <div>
-                    <h3 className='text-md font-semibold'>
-                      Noise Analysis Results:
-                    </h3>
-                    {noiseAnalysisResults.map((result) => (
-                      <p key={result.id}>
-                        Tampering Likelihood: {result.tamperingLikelihood},
-                        Detected Noise: {result.detectedNoise ? 'Yes' : 'No'}
-                      </p>
-                    ))}
-                  </div>
-                ) : (
-                  <p>No Noise Analysis results available.</p>
-                )}
-
-                {metadata?.length > 0 && (
-                  <div>
-                    <h3 className='text-md font-semibold'>Metadata:</h3>
-                    {metadata.map((meta: Metadata) => (
-                      <pre key={meta.metadataId}>
-                        {JSON.stringify(meta.metadata, null, 2)}
-                      </pre>
-                    ))}
-                  </div>
-                )}
-
-                {historicalWeather?.length > 0 && (
-                  <div>
-                    <h3 className='text-md font-semibold'>
-                      Historical Weather:
-                    </h3>
-                    {historicalWeather.map((weather: HistoricalWeather) => (
-                      <p key={weather.id}>{weather.historicalWeather}</p>
-                    ))}
-                  </div>
-                )}
-
-                {deepLearningWeather?.length > 0 && (
-                  <div>
-                    <h3 className='text-md font-semibold'>
-                      Deep Learning Weather:
-                    </h3>
-                    {deepLearningWeather.map((weather: DeepLearningWeather) => (
-                      <p key={weather.id}>{weather.deepLearningWeather}</p>
-                    ))}
-                  </div>
-                )}
-                {geolocation?.length > 0 ? (
-                  <div>
-                    <h3 className='text-md font-semibold'>Geolocation:</h3>
-                    {geolocation.map((geo: ImageGeolocation) => (
-                      <p key={geo.id}>
-                        Latitude: {geo.latitude || 'N/A'}, Longitude:{' '}
-                        {geo.longitude || 'N/A'}
-                      </p>
-                    ))}
-                  </div>
-                ) : (
-                  <p>No geolocation data available.</p>
-                )}
-              </div>
-            )
-          )}
+    <div className='h-[100vh]'>
+      <Button
+        className='logout-button'
+        onClick={() => {
+          logout();
+          toast.success('Logged out successfully!', { autoClose: 3000 });
+          navigate('/');
+        }}
+      >
+        logout
+      </Button>
+      <section className='account-section '>
+        <div className='flex flex-col'>
+          <h1 className='text-primary-light-fill text-3xl text-center pb-10'>
+            Recently uploaded
+          </h1>
+          <div className='account-container'>
+            <div className='image-grid'>
+              {imagesWithResults.map((imageData) => (
+                <div key={imageData.image.imageId} className='image-wrapper'>
+                  <img
+                    src={
+                      presignedUrls[imageData.image.imageId] ||
+                      '/placeholder-image.png'
+                    }
+                    className='image-grid-item'
+                    alt='Uploaded'
+                    onClick={() =>
+                      navigate(`/image/${imageData.image.imageId}`, {
+                        state: {
+                          image: imageData,
+                          presignedUrl: presignedUrls[imageData.image.imageId],
+                        },
+                      })
+                    }
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
 }

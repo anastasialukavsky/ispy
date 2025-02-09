@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import cv from '@techstark/opencv-js';
 
 interface CopyMoveComponentProps {
@@ -79,7 +79,9 @@ const CopyMoveComponent = ({
 
   const detectCopyMoveForgery = (
     srcMat: cv.Mat,
+    // @ts-ignore
     width: number,
+    // @ts-ignore
     height: number
   ) => {
     try {

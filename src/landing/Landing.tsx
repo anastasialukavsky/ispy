@@ -6,6 +6,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
+
+
 export default function Landing() {
   const navigate = useNavigate();
 
@@ -23,10 +25,12 @@ export default function Landing() {
       return;
     }
 
+
     const ctx = gsap.context(() => {
       const tl_01 = gsap.timeline({});
       const tl_02 = gsap.timeline({});
       const tl_03 = gsap.timeline({});
+      // @ts-ignore
       const tl_04 = gsap.timeline({});
       tl_01.from('.pic', {
         yPercent: -10,
@@ -242,7 +246,7 @@ export default function Landing() {
         <div className='relative w-full max-w-6xl h-[75vh] overflow-hidden flex items-center mx-auto'>
           {/* Main bg */}
           <img
-            src='public/assets/landing-bg.gif'
+            src='/assets/landing-bg.gif'
             alt=''
             className='pic h-[70vh] w-full object-cover relative top-[-10%]'
           />
@@ -286,7 +290,7 @@ export default function Landing() {
           <div className='flex pt-20 text-white  w-full 5xl:w-[70%] justify-between px-64 items-start gap-14'>
             <div className='about-img-1 pr-10 w-[90vw]'>
               <img
-                src='public/assets/bg.webp'
+                src='/assets/bg.webp'
                 alt=''
                 className='w-full object-cover'
               />
@@ -310,7 +314,7 @@ export default function Landing() {
           </div>
           <div className='flex pt-44 text-white  w-full 5xl:w-[70%] justify-between px-64 items-start gap-14 flex-row-reverse'>
             <div className='about-img-2 h-full pr-10 '>
-              <img src='public/assets/bg1.webp' alt='' className='w-full' />
+              <img src='/assets/bg1.webp' alt='' className='w-full' />
             </div>
             <div className=' flex flex-col  '>
               <h3 className='about-subheader-2 text-primary-light-fill text-3xl pt-[10%] pb-5'>

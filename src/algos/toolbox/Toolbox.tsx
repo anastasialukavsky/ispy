@@ -13,9 +13,11 @@ export default function Toolbox({
   setSelectedAlgo,
   setDisplayMetadata,
   enableButton,
+  // @ts-ignore
   setEnableButton,
   metadata,
 }: ToolboxProps) {
+  // @ts-ignore
   const [hoveredButton, setHoveredButton] = useState<string | null>(null);
   const [showTooltip, setShowTooltip] = useState<string | null>(null);
   const currentOrigin = window.location.origin;
@@ -37,7 +39,8 @@ export default function Toolbox({
       setShowTooltip(null);
     }, 1200);
   };
-// console.log({metadata})
+  // console.log({metadata})
+
   return (
     <section className='flex flex-col 3xl:translate-y-1/2  translate-y-1/4 justify-center font-abel text-lg tracking-wide px-3'>
       {/* Error Level Analysis */}
@@ -63,7 +66,7 @@ export default function Toolbox({
             className='absolute w-10 top-[1.5rem] right-[-4.8rem] transform -translate-y-1/2 z-10 '
           >
             <img
-              src='public/icons/brain-bulb.svg'
+              src='/icons/brain-bulb.svg'
               alt='brain bulb icon'
               className='cursor-pointer'
             />
@@ -94,7 +97,7 @@ export default function Toolbox({
             className='absolute w-10 top-[1.5rem] right-[-4.8rem] transform -translate-y-1/2 z-10 '
           >
             <img
-              src='public/icons/brain-bulb.svg'
+              src='/icons/brain-bulb.svg'
               alt='brain bulb icon'
               className='cursor-pointer'
             />
@@ -129,7 +132,7 @@ export default function Toolbox({
             className='absolute w-10 top-[1.5rem] right-[-4.8rem] transform -translate-y-1/2 z-10 '
           >
             <img
-              src='public/icons/brain-bulb.svg'
+              src='/icons/brain-bulb.svg'
               alt='brain bulb icon'
               className='cursor-pointer'
             />
@@ -150,7 +153,7 @@ export default function Toolbox({
           className={enableButton ? buttonEnabledStyles : buttonDisabledStyles}
           disabled={!enableButton}
         >
-          Weather Prediction
+          Weather Condition Analysis
         </Button>
         {enableButton && showTooltip === 'Weather Analizer' && (
           <a
@@ -160,7 +163,7 @@ export default function Toolbox({
             className='absolute w-10 top-[1.5rem] right-[-4.8rem] transform -translate-y-1/2 z-10'
           >
             <img
-              src='public/icons/brain-bulb.svg'
+              src='/icons/brain-bulb.svg'
               alt='brain bulb icon'
               className='cursor-pointer'
             />
