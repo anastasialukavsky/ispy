@@ -11,6 +11,9 @@ import axios from 'axios';
 import FlameGraph from './FlameGraph';
 import MetadataFormatter from './MetadataFormatter';
 
+const GRAPHQL_API_URL =
+  import.meta.env.VITE_GRAPHQL_API_URL || 'http://localhost:8080/graphql';
+
 export interface Result {
   imageId?: number;
   score: number;
@@ -168,7 +171,7 @@ function ImageUploader() {
   const uploadToS3 = async (file: File, metadata: any) => {
     try {
       const response = await axios.get(
-        'http://localhost:8080/generate-presigned-url',
+        `${GRAPHQL_API_URL}/generate-presigned-url`,
         {
           params: {
             fileName: file.name,
@@ -217,7 +220,7 @@ function ImageUploader() {
       };
 
       const response = await axios.post(
-        'http://localhost:8080/graphql',
+        GRAPHQL_API_URL,
         {
           query: mutation,
           variables: variables,
@@ -270,7 +273,7 @@ function ImageUploader() {
         };
 
         const response = await axios.post(
-          'http://localhost:8080/graphql',
+          GRAPHQL_API_URL,
           {
             query: mutation,
             variables: variables,
@@ -316,7 +319,7 @@ function ImageUploader() {
       };
 
       const response = await axios.post(
-        'http://localhost:8080/graphql',
+        GRAPHQL_API_URL,
         {
           query: mutation,
           variables: variables,
@@ -405,7 +408,7 @@ function ImageUploader() {
         console.log('Sending SaveEla mutation with variables:', variables);
 
         const response = await axios.post(
-          'http://localhost:8080/graphql',
+          GRAPHQL_API_URL,
           {
             query: mutation,
             variables: variables,
@@ -498,7 +501,7 @@ function ImageUploader() {
         };
 
         const response = await axios.post(
-          'http://localhost:8080/graphql',
+          GRAPHQL_API_URL,
           {
             query: mutation,
             variables: variables,
@@ -544,7 +547,7 @@ function ImageUploader() {
         };
 
         const response = await axios.post(
-          'http://localhost:8080/graphql',
+          GRAPHQL_API_URL,
           {
             query: mutation,
             variables: variables,
@@ -593,7 +596,7 @@ function ImageUploader() {
         };
 
         const response = await axios.post(
-          'http://localhost:8080/graphql',
+          GRAPHQL_API_URL,
           {
             query: mutation,
             variables: variables,

@@ -18,6 +18,9 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 
+const GRAPHQL_API_URL =
+  import.meta.env.VITE_GRAPHQL_API_URL || 'http://localhost:8080/graphql';
+
 export default function Account() {
   const [hasFetched, setHasFetched] = useState(false);
   const [presignedUrls, setPresignedUrls] = useState<Record<string, string>>(
@@ -53,7 +56,7 @@ export default function Account() {
   const fetchPresignedGetUrl = async (filePath: string): Promise<string> => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/generate-presigned-get-url?fileName=${encodeURIComponent(
+        `${GRAPHQL_API_URL}/generate-presigned-get-url?fileName=${encodeURIComponent(
           filePath
         )}`
       );
