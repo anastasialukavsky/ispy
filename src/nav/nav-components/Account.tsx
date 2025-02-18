@@ -19,7 +19,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 
 const GRAPHQL_API_URL =
-  import.meta.env.VITE_GRAPHQL_API_URL || 'http://localhost:8080/graphql';
+  import.meta.env.VITE_REACT_APP_API_URL || 'http://localhost:8080/graphql';
 
 export default function Account() {
   const [hasFetched, setHasFetched] = useState(false);

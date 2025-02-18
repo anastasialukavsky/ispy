@@ -5,7 +5,7 @@ export type OffsetDateTime = string;
 export type JSON = any;
 
 const GRAPHQL_API_URL =
-  import.meta.env.VITE_GRAPHQL_API_URL || 'http://localhost:8080/graphql';
+  import.meta.env.VITE_REACT_APP_API_URL || 'http://localhost:8080/graphql';
 
 /**
  * Fetches all saved images and their associated algorithm results for a given user ID.
