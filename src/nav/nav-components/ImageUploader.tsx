@@ -12,7 +12,7 @@ import FlameGraph from './FlameGraph';
 import MetadataFormatter from './MetadataFormatter';
 
 const GRAPHQL_API_URL =
-  import.meta.env.VITE_GRAPHQL_API_URL || 'http://localhost:8080/graphql';
+  import.meta.env.VITE_REACT_APP_API_URL || 'http://localhost:8080/graphql';
 
 export interface Result {
   imageId?: number;
