@@ -171,7 +171,7 @@ function ImageUploader() {
   const uploadToS3 = async (file: File, metadata: any) => {
     try {
       const response = await axios.get(
-        `${GRAPHQL_API_URL}/generate-presigned-url`,
+        `${GRAPHQL_API_URL}/api/generate-presigned-url`,
         {
           params: {
             fileName: file.name,
