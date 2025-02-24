@@ -72,6 +72,11 @@ function ImageUploader() {
     { algo: 'Noise Analysis', score: 0.05, tamperingLikelihood: 5 },
     { algo: 'Weather Analysis', score: 0.08 },
   ];
+console.log('GRAPHQL_API_URL (build-time):', GRAPHQL_API_URL);
+console.log(
+  'import.meta.env.VITE_REACT_APP_API_URL (runtime):',
+  import.meta.env.VITE_REACT_APP_API_URL
+);
 
   const demoResults = demoResultsSignificantForgery;
 
@@ -143,6 +148,8 @@ function ImageUploader() {
               setSavedResults(new Set());
 
               if (isAuthenticated) {
+                console.log('isAuthenticated', isAuthenticated);
+                console.log('GRAPHQL_API_URL: ', GRAPHQL_API_URL);
                 await uploadToS3(file, meta);
               }
               //!DEMO
