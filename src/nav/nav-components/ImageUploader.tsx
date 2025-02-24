@@ -178,7 +178,7 @@ function ImageUploader() {
           },
         }
       );
-
+console.log('GRAPHQL_API_URL: ', GRAPHQL_API_URL);
       const presignedUrl = response.data;
 
       await axios.put(presignedUrl, file, {
