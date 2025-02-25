@@ -13,7 +13,7 @@ import MetadataFormatter from './MetadataFormatter';
 
 const GRAPHQL_API_URL =
   import.meta.env.VITE_REACT_APP_API_URL || 'http://localhost:8080/graphql';
-
+const API_BASE_URL = GRAPHQL_API_URL.replace('/graphql', '');
 export interface Result {
   imageId?: number;
   score: number;
@@ -178,16 +178,18 @@ console.log(
   const uploadToS3 = async (file: File, metadata: any) => {
     try {
       const response = await axios.get(
-        `${GRAPHQL_API_URL}/api/generate-presigned-url`,
+        `${API_BASE_URL}/api/generate-presigned-url`,
         {
           params: {
             fileName: file.name,
           },
         }
       );
-console.log('GRAPHQL_API_URL: ', GRAPHQL_API_URL);
+    console.log('GRAPHQL_API_URL: ', GRAPHQL_API_URL);
       const presignedUrl = response.data;
 
+    console.log('API_BASE_URL: ', API_BASE_URL);
+    console.log('Presigned URL: ', response.data);
       await axios.put(presignedUrl, file, {
         headers: {
           'Content-Type': file.type,
