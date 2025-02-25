@@ -20,6 +20,7 @@ import { useNavigate } from 'react-router-dom';
 
 const GRAPHQL_API_URL =
   import.meta.env.VITE_REACT_APP_API_URL || 'http://localhost:8080/graphql';
+  const API_BASE_URL = GRAPHQL_API_URL.replace('/graphql', '');
 
 export default function Account() {
   const [hasFetched, setHasFetched] = useState(false);
@@ -39,6 +40,7 @@ export default function Account() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+
   const fetchImagesWithResults = async (userId: string) => {
     setLoading(true);
     setError(null);
@@ -56,7 +58,7 @@ export default function Account() {
   const fetchPresignedGetUrl = async (filePath: string): Promise<string> => {
     try {
       const response = await axios.get(
-        `${GRAPHQL_API_URL}/generate-presigned-get-url?fileName=${encodeURIComponent(
+        `${API_BASE_URL}/generate-presigned-get-url?fileName=${encodeURIComponent(
           filePath
         )}`
       );

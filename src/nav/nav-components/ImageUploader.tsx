@@ -185,11 +185,11 @@ console.log(
           },
         }
       );
-    console.log('GRAPHQL_API_URL: ', GRAPHQL_API_URL);
+    // console.log('GRAPHQL_API_URL: ', GRAPHQL_API_URL);
       const presignedUrl = response.data;
 
-    console.log('API_BASE_URL: ', API_BASE_URL);
-    console.log('Presigned URL: ', response.data);
+    // console.log('API_BASE_URL: ', API_BASE_URL);
+    // console.log('Presigned URL: ', response.data);
       await axios.put(presignedUrl, file, {
         headers: {
           'Content-Type': file.type,
