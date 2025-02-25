@@ -58,7 +58,7 @@ export default function Account() {
   const fetchPresignedGetUrl = async (filePath: string): Promise<string> => {
     try {
       const response = await axios.get(
-        `${API_BASE_URL}/generate-presigned-get-url?fileName=${encodeURIComponent(
+        `${API_BASE_URL}/api/generate-presigned-get-url?fileName=${encodeURIComponent(
           filePath
         )}`
       );
