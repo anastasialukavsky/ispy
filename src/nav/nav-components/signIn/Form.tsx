@@ -80,7 +80,7 @@ export default function Form({
 
         <label htmlFor='password'>password</label>
         <div
-          className={`flex items-center mb-3 w-full px-3 ${
+          className={`relative w-full mb-3  ${
             errors.password ? 'input-error' : 'border border-slate-300'
           }`}
         >
@@ -96,6 +96,7 @@ export default function Form({
             className={`w-full py-2 text-sm outline-none ${
               errors.password ? 'placeholder-error' : ''
             }`}
+            style={{ paddingLeft: '12px' }}
             {...register('password', {
               required: 'Password is required',
               minLength: {
@@ -105,8 +106,9 @@ export default function Form({
             })}
           />
           <div
-            className='mr-3 cursor-pointer'
+            className='absolute right-0 bottom-0 -translate-y-1/2 cursor-pointer'
             onClick={togglePasswordVisibility}
+            style={{ paddingRight: '12px' }}
           >
             <img
               src={isPasswordVisible ? visibilityOff : visibilityOn}
@@ -120,7 +122,7 @@ export default function Form({
           <>
             <label htmlFor='confirmPassword'>confirm password</label>
             <div
-              className={`flex items-center mb-3 w-full px-3 ${
+              className={`relative w-full mb-3 ${
                 errors.confirmPassword
                   ? 'input-error'
                   : 'border border-slate-300'
@@ -137,6 +139,7 @@ export default function Form({
                 className={`w-full py-2 text-sm outline-none ${
                   errors.confirmPassword ? 'placeholder-error' : ''
                 }`}
+                style={{ paddingLeft: '12px' }}
                 {...register('confirmPassword', {
                   required: 'Confirm password is required',
                   validate: (value) =>
@@ -144,8 +147,9 @@ export default function Form({
                 })}
               />
               <div
-                className='mr-3 cursor-pointer'
+                className='absolute right-0 bottom-0 -translate-y-1/2 cursor-pointer'
                 onClick={toggleConfirmPasswordVisibility}
+                style={{ paddingRight: '12px' }}
               >
                 <img
                   src={isConfirmPasswordVisible ? visibilityOff : visibilityOn}
