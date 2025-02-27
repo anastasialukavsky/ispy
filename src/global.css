@@ -20,3 +20,15 @@ a {
 a:hover {
   color: #4a5568; /* link hover color */
 }
+
+/* nuke the autofill */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #1C1C1C inset !important;
+  background-color: #1C1C1C !important;
+  color: white !important;
+  -webkit-text-fill-color: white !important;
+  transition: background-color 9999s ease-in-out 0s;
+}
