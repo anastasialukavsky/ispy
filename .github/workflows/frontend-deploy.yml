@@ -52,17 +52,13 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Start Backend (Optional: Use a Mock API Instead)
-        run: |
-          docker-compose up -d backend
-          sleep 10 # Give backend time to start
-
       - name: Run Cypress E2E Tests
         uses: cypress-io/github-action@v6
         with:
           install-command: npm ci
           start: npm run dev
-          wait-on: 'http://localhost:3000'
+          wait-on: 'https://app.ispy.digital'  
+          config: baseUrl=https://app.ispy.digital  
           browser: chrome
           record: false
 
