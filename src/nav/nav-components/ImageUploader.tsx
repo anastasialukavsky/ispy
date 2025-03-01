@@ -20,6 +20,7 @@ export interface Result {
   algo: string;
   tamperingLikelihood?: number;
   detectedEla?: boolean;
+  temperingAnalysis?: string;
 }
 
 function ImageUploader() {
@@ -59,60 +60,57 @@ function ImageUploader() {
   const [demoCase, setDemoCase] = useState<'significant' | 'authentic'>(
     'significant'
   );
+  // @ts-ignore
   const [demoStep, setDemoStep] = useState<number>(0);
   // Hardcoded results for demo
-  const demoResultsSignificantForgery: Result[] = [
-    { algo: 'ELA', score: 0.85, tamperingLikelihood: 85, detectedEla: true },
-    { algo: 'Noise Analysis', score: 0.95, tamperingLikelihood: 95 },
-    { algo: 'Weather Analysis', score: 2.0 },
-  ];
+  // const demoResultsSignificantForgery: Result[] = [
+  //   { algo: 'ELA', score: 0.85, tamperingLikelihood: 85, detectedEla: true },
+  //   { algo: 'Noise Analysis', score: 0.95, tamperingLikelihood: 95 },
+  //   { algo: 'Weather Analysis', score: 2.0 },
+  // ];
   // @ts-ignore
   const demoResultsAuthentic: Result[] = [
     { algo: 'ELA', score: 0.1, tamperingLikelihood: 10, detectedEla: false },
     { algo: 'Noise Analysis', score: 0.05, tamperingLikelihood: 5 },
     { algo: 'Weather Analysis', score: 0.08 },
   ];
-console.log('GRAPHQL_API_URL (build-time):', GRAPHQL_API_URL);
-console.log(
-  'import.meta.env.VITE_REACT_APP_API_URL (runtime):',
-  import.meta.env.VITE_REACT_APP_API_URL
-);
 
-  const demoResults = demoResultsSignificantForgery;
+  // const demoResults = demoResultsSignificantForgery;
+  // const demoResults = results;
 
-  const handleDemoResult = useCallback(async () => {
-    if (demoMode && demoStep < demoResults.length && savedImageId) {
-      const nextResult = demoResults[demoStep];
+  // const handleDemoResult = useCallback(async () => {
+  //   if (demoMode && demoStep < demoResults.length && savedImageId) {
+  //     const nextResult = demoResults[demoStep];
 
-      if (
-        nextResult.algo === 'ELA' &&
-        nextResult.tamperingLikelihood !== undefined
-      ) {
-        await saveElaResult(
-          savedImageId,
-          nextResult.tamperingLikelihood,
-          nextResult.detectedEla ?? false
-        );
-      } else if (nextResult.algo === 'Noise Analysis') {
-        await saveNoiseAnalysisResult(
-          savedImageId,
-          nextResult.score,
-          nextResult.score > 0.5
-        );
-        setTamperingResult(
-          'Significant noise detected. The image shows potential tampering.'
-        );
-      } else if (nextResult.algo === 'Weather Analysis') {
-        setWeatherPrediction('Rainy'); // Example weather prediction
-        setResults((prevResults) => [
-          ...prevResults,
-          { algo: 'Weather Analysis', score: nextResult.score },
-        ]);
-      }
+  //     if (
+  //       nextResult.algo === 'ELA' &&
+  //       nextResult.tamperingLikelihood !== undefined
+  //     ) {
+  //       await saveElaResult(
+  //         savedImageId,
+  //         nextResult.tamperingLikelihood,
+  //         nextResult.detectedEla ?? false
+  //       );
+  //     } else if (nextResult.algo === 'Noise Analysis') {
+  //       await saveNoiseAnalysisResult(
+  //         savedImageId,
+  //         nextResult.score,
+  //         nextResult.score > 0.5
+  //       );
+  //       setTamperingResult(
+  //         'Significant noise detected. The image shows potential tampering.'
+  //       );
+  //     } else if (nextResult.algo === 'Weather Analysis') {
+  //       setWeatherPrediction('Rainy'); // Example weather prediction
+  //       setResults((prevResults) => [
+  //         ...prevResults,
+  //         { algo: 'Weather Analysis', score: nextResult.score },
+  //       ]);
+  //     }
 
-      setDemoStep((prevStep) => prevStep + 1);
-    }
-  }, [demoMode, demoStep, demoResults, savedImageId]);
+  //     setDemoStep((prevStep) => prevStep + 1);
+  //   }
+  // }, [demoMode, demoStep, demoResults, savedImageId]);
 
   // console.log({enableButton})
   const handleImageUpload = async (
@@ -153,7 +151,7 @@ console.log(
                 await uploadToS3(file, meta);
               }
               //!DEMO
-              handleDemoResult();
+              // handleDemoResult();
             };
 
             reader.readAsDataURL(file);
@@ -185,11 +183,9 @@ console.log(
           },
         }
       );
-    // console.log('GRAPHQL_API_URL: ', GRAPHQL_API_URL);
+
       const presignedUrl = response.data;
 
-    // console.log('API_BASE_URL: ', API_BASE_URL);
-    // console.log('Presigned URL: ', response.data);
       await axios.put(presignedUrl, file, {
         headers: {
           'Content-Type': file.type,
@@ -647,7 +643,7 @@ console.log(
       if (result.algo === 'Noise Analysis') {
         return {
           name: result.algo,
-          value: 54, // Hardcoded high value for Noise Analysis
+          value: (result.score || 0) * 100,
         };
       } else if (result.algo === 'Weather Analysis') {
         return {
@@ -734,9 +730,6 @@ console.log(
     }
   }, [selectedAlgo, selectedImage]);
 
-  console.log({ weatherPrediction });
-  // console.log({ tamperingProbability });
-  // console.log({ selectedAlgo });
   // @ts-ignore
   const overallProbability = calculateOverallProbability();
 
@@ -854,12 +847,13 @@ console.log(
             .map((noiseResult, index) => (
               <div key={index} className='pt-3'>
                 <p>
-                  <strong>Noise Analysis Score:</strong> {53.8}%
+                  <strong>Noise Analysis Score:</strong>{' '}
+                  {noiseResult.score.toFixed(2)}%
                 </p>
                 <p>
                   <strong>Tampering Likelihood:</strong>{' '}
-                  {noiseResult.tamperingLikelihood?.toFixed(2)} Significant
-                  noise detected. The image shows strong evidence of tampering.
+                  {noiseResult.temperingAnalysis}{' '}
+                  {/* ✅ Now displays tampering text */}
                 </p>
               </div>
             ))}
@@ -923,7 +917,7 @@ console.log(
         {results.length > 0 && (
           <div className='mt-10 w-full max-w-3xl'>
             <h2 className='text-lg font-bold text-white mb-4'>
-              Approximate tampering likelihood
+              Approximate tampering likelihood:
             </h2>
             {transformResultsToFlameGraphData(results).length > 0 && (
               <FlameGraph data={transformResultsToFlameGraphData(results)} />
