@@ -68,12 +68,12 @@ function ImageUploader() {
   //   { algo: 'Noise Analysis', score: 0.95, tamperingLikelihood: 95 },
   //   { algo: 'Weather Analysis', score: 2.0 },
   // ];
-  // @ts-ignore
-  const demoResultsAuthentic: Result[] = [
-    { algo: 'ELA', score: 0.1, tamperingLikelihood: 10, detectedEla: false },
-    { algo: 'Noise Analysis', score: 0.05, tamperingLikelihood: 5 },
-    { algo: 'Weather Analysis', score: 0.08 },
-  ];
+
+  // const demoResultsAuthentic: Result[] = [
+  //   { algo: 'ELA', score: 0.1, tamperingLikelihood: 10, detectedEla: false },
+  //   { algo: 'Noise Analysis', score: 0.05, tamperingLikelihood: 5 },
+  //   { algo: 'Weather Analysis', score: 0.08 },
+  // ];
 
   // const demoResults = demoResultsSignificantForgery;
   // const demoResults = results;
@@ -112,7 +112,7 @@ function ImageUploader() {
   //   }
   // }, [demoMode, demoStep, demoResults, savedImageId]);
 
-  // console.log({enableButton})
+
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -123,7 +123,7 @@ function ImageUploader() {
 
         try {
           const meta = await extractMetadataForImage(file);
-          if (meta) {
+         
             const reader = new FileReader();
             reader.onload = async (e) => {
               setSelectedImage(e.target?.result as string);
@@ -146,19 +146,16 @@ function ImageUploader() {
               setSavedResults(new Set());
 
               if (isAuthenticated) {
-                console.log('isAuthenticated', isAuthenticated);
-                console.log('GRAPHQL_API_URL: ', GRAPHQL_API_URL);
                 await uploadToS3(file, meta);
               }
-              //!DEMO
+              
               // handleDemoResult();
             };
 
             reader.readAsDataURL(file);
-          } else {
-            console.error('Metadata extraction failed or not ready');
+     
             // alert('Metadata extraction failed. Image upload aborted.');
-          }
+          
         } catch (error) {
           console.error('Error extracting metadata:', error);
           // alert('Failed to extract metadata. Image upload aborted.');
@@ -166,12 +163,6 @@ function ImageUploader() {
       }
     }
   };
-  // useEffect(() => {
-  //   // Trigger the next demo result when `demoStep` updates
-  //   if (demoMode && demoStep > 0) {
-  //     handleDemoResult();
-  //   }
-  // }, [demoStep]);
 
   const uploadToS3 = async (file: File, metadata: any) => {
     try {
