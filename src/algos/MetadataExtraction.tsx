@@ -46,8 +46,6 @@ const MetadataExtraction = ({
   setHistoricalWeather,
   setGeolocation,
   setTamperingProbability,
-  // @ts-ignore
-  setProcessing,
   savedImageId,
   saveHistoricalWeather,
   saveGeolocation,
@@ -72,8 +70,7 @@ const MetadataExtraction = ({
           throw new Error('API key is missing');
         }
 
-        const url = 'https://google.com';
-        // const url = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${lat},${lon}/${date}?key=${apiKey}`;
+        const url = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${lat},${lon}/${date}?key=${apiKey}`;
         const response = await fetch(url);
 
         if (!response.ok) {
@@ -116,8 +113,6 @@ const MetadataExtraction = ({
     apiCallInProgress.current = true;
 
     try {
-      // console.log('Fetching image metadata...');
-      // setProcessing(true)
       const file = await fetch(imageSrc).then((res) => {
         if (!res.ok) {
           throw new Error(`Error fetching image: ${res.statusText}`);
@@ -133,14 +128,12 @@ const MetadataExtraction = ({
       setMetadata(meta);
 
       const softwareUsed = meta?.Software || '';
-      // console.log({softwareUsed})
       let metadataTamperingScore = 0;
       if (
         softwareUsed &&
         (softwareUsed.toLowerCase().includes('photoshop') ||
           softwareUsed.toLowerCase().includes('vscode'))
       ) {
-        // setSoftwareUsed(softwareUsed);
         metadataTamperingScore = 50;
       }
 
@@ -193,7 +186,6 @@ const MetadataExtraction = ({
     } catch (error) {
       console.error('Error extracting metadata:', error);
     } finally {
-      // setProcessing(false)
       apiCallInProgress.current = false;
     }
   }, [
@@ -204,8 +196,6 @@ const MetadataExtraction = ({
     setGeolocation,
     setHistoricalWeather,
     weatherPrediction,
-    // setProcessing,
-    // setSoftwareUsed,
     fetchError,
   ]);
 

@@ -202,44 +202,6 @@ export default function Landing() {
     return () => ctx.revert();
   }, []);
 
-  //   const ctx = gsap.context(() => {
-  //     // Image timeline
-  //     const tl_01 = gsap.timeline({});
-  //     const tl_02 = gsap.timeline({});
-  //     const tl_03 = gsap.timeline({});
-  //     tl_01.from('.pic', {
-  //       yPercent: -10,
-  //       autoAlpha: 0,
-  //       ease: 'expo',
-  //       duration: 1,
-  //     });
-
-  //     tl_02.fromTo(
-  //       '.letter-span:not(.space)',
-  //       { height: 0, autoAlpha: 0, opacity: 0 },
-  //       {
-  //         height: 'auto',
-  //         opacity: 1,
-  //         autoAlpha: 1,
-  //         duration: 0.4,
-  //         ease: 'power2.inOut',
-  //         stagger: 0.03,
-  //         clearProps: 'all',
-  //       }
-  //     );
-
-  //     tl_03.from('.cta-section', {
-  //       opacity: 0,
-  //       y: 30,
-  //       duration: 1,
-  //       delay: 0.2,
-  //       ease: 'expo',
-  //     });
-  //   });
-
-  //   return () => ctx.revert();
-  // }, []);
-
   return (
     <main className='flex w-full h-full min-h-[100vh]  flex-col items-center justify-center bg-primary-light-fill overflow-hidden'>
       <section className='landing w-full h-full z-[100] relative pt-44'>

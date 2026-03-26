@@ -102,7 +102,6 @@ const FlameGraph: React.FC<FlameGraphProps> = ({ data }) => {
   return (
     <div style={{ height: '200px', width: '700px' }}>
       {' '}
-      {/* Set height here */}
       <canvas ref={chartRef} />
     </div>
   );

@@ -12,8 +12,6 @@ import SignUp from './nav/nav-components/signUp/SignUp';
 import SignIn from './nav/nav-components/signIn/SignIn';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import ImageDetails from './nav/nav-components/ImageDetails';
-// import { UserImagesProvider } from './context/UserImagesContext';
 
 function App() {
   const lenis = new Lenis();
@@ -26,7 +24,6 @@ function App() {
   requestAnimationFrame(raf);
   return (
     <OpenCvProvider>
-      {/* <UserImagesProvider> */}
       <Router>
         <Navbar />
         <ToastContainer position='top-right' autoClose={5000} />
@@ -38,10 +35,8 @@ function App() {
           <Route path='/upload' element={<ImageUploader />} />
           <Route path='/auth/signup' element={<SignUp />} />
           <Route path='/auth/signin' element={<SignIn />} />
-          <Route path='/image/:imageId' element={<ImageDetails />} />
         </Routes>
       </Router>
-      {/* </UserImagesProvider> */}
     </OpenCvProvider>
   );
 }

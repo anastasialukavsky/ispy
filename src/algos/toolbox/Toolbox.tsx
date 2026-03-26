@@ -7,15 +7,20 @@ type ToolboxProps = {
   setEnableButton: React.Dispatch<React.SetStateAction<boolean>>;
   enableButton: boolean;
   metadata?: any;
+  geolocation?: {
+    latitude: number;
+    longitude: number;
+  } | null;
+  canRunWeatherValidation?: boolean;
 };
 
 export default function Toolbox({
   setSelectedAlgo,
   setDisplayMetadata,
   enableButton,
-  // @ts-ignore
-  setEnableButton,
   metadata,
+  geolocation,
+  canRunWeatherValidation = false,
 }: ToolboxProps) {
   // @ts-ignore
   const [hoveredButton, setHoveredButton] = useState<string | null>(null);
@@ -39,11 +44,9 @@ export default function Toolbox({
       setShowTooltip(null);
     }, 1200);
   };
-  // console.log({metadata})
 
   return (
-    <section className='flex flex-col 3xl:translate-y-1/2  translate-y-1/4 justify-center font-abel text-lg tracking-wide px-3'>
-      {/* Error Level Analysis */}
+    <section className='flex flex-col 3xl:translate-y-1/2 translate-y-1/4 justify-center font-abel text-lg tracking-wide px-3'>
       <div className='relative'>
         <Button
           onClick={() => {
@@ -55,6 +58,7 @@ export default function Toolbox({
           colorVariant={enableButton ? 'light' : 'dark'}
           className={enableButton ? buttonEnabledStyles : buttonDisabledStyles}
           disabled={!enableButton}
+          disabledTooltip='Please upload an image first'
         >
           Error Level Analysis
         </Button>
@@ -74,7 +78,6 @@ export default function Toolbox({
         )}
       </div>
 
-      {/*  Noise Analysis */}
       <div className='relative'>
         <Button
           onClick={() => {
@@ -86,6 +89,7 @@ export default function Toolbox({
           colorVariant={enableButton ? 'light' : 'dark'}
           className={enableButton ? buttonEnabledStyles : buttonDisabledStyles}
           disabled={!enableButton}
+          disabledTooltip='Please upload an image first'
         >
           Noise Analysis
         </Button>
@@ -105,7 +109,6 @@ export default function Toolbox({
         )}
       </div>
 
-      {/* Metadata */}
       <div className='relative'>
         <Button
           onClick={() => {
@@ -121,6 +124,11 @@ export default function Toolbox({
               : buttonDisabledStyles
           }
           disabled={!metadata}
+          disabledTooltip={
+            !enableButton
+              ? 'Please upload an image first'
+              : 'This image contains no metadata'
+          }
         >
           Metadata
         </Button>
@@ -140,7 +148,6 @@ export default function Toolbox({
         )}
       </div>
 
-      {/* Weather */}
       <div className='relative'>
         <Button
           onClick={() => {
@@ -149,9 +156,20 @@ export default function Toolbox({
           }}
           onMouseEnter={() => handleMouseEnter('Weather Analizer')}
           onMouseLeave={handleMouseLeave}
-          colorVariant={enableButton ? 'light' : 'dark'}
-          className={enableButton ? buttonEnabledStyles : buttonDisabledStyles}
-          disabled={!enableButton}
+          colorVariant={
+            enableButton && canRunWeatherValidation ? 'light' : 'dark'
+          }
+          className={
+            enableButton && canRunWeatherValidation
+              ? buttonEnabledStyles
+              : buttonDisabledStyles
+          }
+          disabled={!canRunWeatherValidation}
+          disabledTooltip={
+            !enableButton
+              ? 'Please upload an image first'
+              : 'Weather analysis is not possible for this image'
+          }
         >
           Weather Condition Analysis
         </Button>
@@ -171,7 +189,6 @@ export default function Toolbox({
         )}
       </div>
 
-      {/* Geolocation */}
       <div className='relative'>
         <Button
           onClick={() => {
@@ -180,31 +197,22 @@ export default function Toolbox({
           }}
           onMouseEnter={() => handleMouseEnter('Geolocation')}
           onMouseLeave={handleMouseLeave}
-          colorVariant={enableButton && metadata ? 'light' : 'dark'}
+          colorVariant={enableButton && !!geolocation ? 'light' : 'dark'}
           className={
-            enableButton && metadata
+            enableButton && !!geolocation
               ? buttonEnabledStyles
               : buttonDisabledStyles
           }
-          disabled={!metadata}
+          disabled={!geolocation}
+          disabledTooltip={
+            !enableButton
+              ? 'Please upload an image first'
+              : 'This image contains no geolocation data'
+          }
         >
           Geolocation
         </Button>
       </div>
-
-      {/* Apply All */}
-      {/* <div className='relative'>
-        <Button
-          onClick={() => setSelectedAlgo('All')}
-          onMouseEnter={() => handleMouseEnter('All')}
-          onMouseLeave={handleMouseLeave}
-          colorVariant={enableButton ? 'light' : 'dark'}
-          className={enableButton ? buttonEnabledStyles : buttonDisabledStyles}
-          disabled={!enableButton}
-        >
-          Apply All
-        </Button>
-      </div> */}
     </section>
   );
 }

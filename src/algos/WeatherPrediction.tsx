@@ -12,8 +12,6 @@ interface WeatherPredictionProps {
 export default function WeatherPrediction({
   imageSrc,
   setWeatherPrediction,
-  // @ts-ignore
-  setProcessing,
   savedImageId,
   saveDeepLearningWeatherResult,
 }: WeatherPredictionProps) {
@@ -36,7 +34,6 @@ export default function WeatherPrediction({
   const predictWeather = async () => {
     if (!model || !imageSrc) return;
 
-    // setProcessing(true)
     const imgElement = document.createElement('img');
     imgElement.src = imageSrc;
     imgElement.onload = async () => {

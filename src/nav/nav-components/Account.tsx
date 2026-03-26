@@ -3,16 +3,8 @@ import { Button } from '../../UI';
 import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
 import {
-  // @ts-ignore
-  DeepLearningWeather,
   getUserImagesWithResults,
-  // @ts-ignore
-  HistoricalWeather,
-  // @ts-ignore
-  ImageGeolocation,
   ImageWithResults,
-  // @ts-ignore
-  Metadata,
 } from '../../graphql/service/imageService';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -27,12 +19,7 @@ export default function Account() {
   const [presignedUrls, setPresignedUrls] = useState<Record<string, string>>(
     {}
   );
-  // @ts-ignore
-  const [selectedImage, setSelectedImage] = useState<ImageWithResults | null>(
-    null
-  );
-  // @ts-ignore
-  const [selectedUrl, setSelectedUrl] = useState<string | null>(null);
+
   const { logout, userId } = useAuth();
   const [imagesWithResults, setImagesWithResults] = useState<
     ImageWithResults[]
