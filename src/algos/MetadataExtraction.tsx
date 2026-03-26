@@ -4,7 +4,6 @@ import { useAuth } from '../context/AuthContext';
 
 const VITE_VISUAL_CROSSING_API_KEY = import.meta.env
   .VITE_VISUAL_CROSSING_API_KEY;
-
 interface Props {
   imageSrc: string | null;
   onResult: (result: { score: number; algo: string }) => void;
